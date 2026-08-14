@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrar Entrada — Estacionamento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+</head>
+<body>
+
+  <div class="shell">
+    <div id="sidebar-container"></div>
+
+    <div>
+      <div id="header-container"></div>
+
+      <main class="conteudo">
+        <div class="pagina-titulo">
+          <h1>Registrar entrada</h1>
+          <p>Digite a placa para consultar ou cadastrar o veículo</p>
+        </div>
+
+        <div class="cartao">
+          <form id="form-busca" class="form-busca-placa">
+            <div class="campo">
+              <label for="campo-placa">Placa</label>
+              <input type="text" id="campo-placa" maxlength="8" placeholder="ABC1D23" required autofocus />
+            </div>
+            <button type="submit" class="btn btn-secundario">Consultar</button>
+          </form>
+
+          <div id="aviso-placa" class="login-erro oculto"></div>
+
+          <!-- Preenchido automaticamente se a placa já existir -->
+          <div id="info-existente" class="info-veiculo oculto">
+            <div class="info-item">
+              <div class="info-rotulo">Nome</div>
+              <div class="info-valor" id="info-nome">—</div>
+            </div>
+            <div class="info-item">
+              <div class="info-rotulo">Modelo</div>
+              <div class="info-valor" id="info-modelo">—</div>
+            </div>
+            <div class="info-item">
+              <div class="info-rotulo">Cor</div>
+              <div class="info-valor" id="info-cor">—</div>
+            </div>
+            <div class="info-item">
+              <div class="info-rotulo">Tipo</div>
+              <div class="info-valor" id="info-tipo">—</div>
+            </div>
+          </div>
+
+          <!-- Preenchido manualmente se a placa NÃO existir -->
+          <form id="form-cadastro" class="grade-form oculto" style="margin-bottom: var(--espaco-4);">
+            <div class="campo">
+              <label for="novo-nome">Nome completo</label>
+              <input type="text" id="novo-nome" required />
+            </div>
+            <div class="campo">
+              <label for="novo-contato">Telefone</label>
+              <input type="tel" id="novo-contato" />
+            </div>
+            <div class="campo">
+              <label for="novo-modelo">Modelo</label>
+              <input type="text" id="novo-modelo" />
+            </div>
+            <div class="campo">
+              <label for="novo-cor">Cor</label>
+              <input type="text" id="novo-cor" />
+            </div>
+          </form>
+
+          <div id="bloco-confirmacao" class="oculto">
+            <div class="info-veiculo" style="background:transparent; padding:0;">
+              <div class="info-item">
+                <div class="info-rotulo">Horário de entrada</div>
+                <div class="info-valor" id="info-horario-entrada">—</div>
+              </div>
+            </div>
+
+            <button id="btn-registrar-entrada" class="btn btn-primario btn-bloco">
+              🟢 Registrar entrada
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Cupom impresso (fica invisível na tela, só aparece ao imprimir) -->
+  <div class="recibo" id="recibo">
+    <div style="text-align:center;">
+      <strong id="recibo-nome-estacionamento">Estacionamento</strong>
+    </div>
+    <hr />
+    <div class="recibo-linha"><span>Placa:</span><span id="recibo-placa">—</span></div>
+    <div class="recibo-linha"><span>Entrada:</span><span id="recibo-entrada">—</span></div>
+    <div class="recibo-linha"><span>Funcionário:</span><span id="recibo-funcionario">—</span></div>
+    <hr />
+    <div style="text-align:center;">Guarde este cupom</div>
+  </div>
+
+  <script type="module" src="js/entrada.js"></script>
+</body>
+</html>

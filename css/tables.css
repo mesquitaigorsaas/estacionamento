@@ -1,0 +1,54 @@
+/* ============================================================
+   css/tables.css
+   Estilos de tabelas e containers responsivos.
+   ============================================================ */
+
+.tabela-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: var(--espaco-2, 8px);
+  border-radius: var(--raio, 8px);
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+
+.tabela th,
+.tabela td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--cor-borda, #E2E8F0);
+}
+
+.tabela th {
+  background-color: var(--cor-fundo, #F7F9FB);
+  color: var(--cor-texto-suave, #6B7280);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tabela tbody tr:hover {
+  background-color: rgba(20, 33, 61, 0.02);
+}
+
+.mensagem-vazio {
+  text-align: center;
+  padding: var(--espaco-4, 24px);
+  color: var(--cor-texto-suave, #6B7280);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .tabela th,
+  .tabela td {
+    padding: 10px 12px;
+    font-size: 0.875rem;
+  }
+}

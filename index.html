@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Estacionamento — Entrar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+
+  <div class="tela-login">
+    <div class="login-caixa">
+
+      <div class="login-topo">
+        <img src="assets/logo/logo.png" alt="Logo do estacionamento" class="logo" />
+        <p>Acesse sua conta para continuar</p>
+      </div>
+
+      <!-- Abas -->
+      <div class="login-abas">
+        <button type="button" class="login-aba ativa" data-aba="funcionario">Sou funcionário</button>
+        <button type="button" class="login-aba" data-aba="cliente">Cadastrar cliente</button>
+      </div>
+
+      <!-- ============== ABA: LOGIN DE FUNCIONÁRIO ============== -->
+      <form id="form-login" class="painel-aba">
+        <div id="login-erro" class="login-erro oculto"></div>
+
+        <div class="campo">
+          <label for="login-usuario">Usuário</label>
+          <input type="text" id="login-usuario" name="usuario" autocomplete="username" required />
+        </div>
+
+        <div class="campo">
+          <label for="login-senha">Senha</label>
+          <div class="campo-senha-wrapper">
+            <input type="password" id="login-senha" name="senha" autocomplete="current-password" required />
+            <button type="button" id="btn-mostrar-senha">Mostrar</button>
+          </div>
+        </div>
+
+        <div class="login-links">
+          <a href="#" id="link-esqueci-senha">Esqueci minha senha</a>
+        </div>
+
+        <button type="submit" id="btn-entrar" class="btn btn-primario btn-bloco">Entrar</button>
+      </form>
+
+      <!-- ============== ABA: CADASTRO DE CLIENTE ============== -->
+      <form id="form-cadastro-cliente" class="painel-aba oculto">
+        <div id="cadastro-erro" class="login-erro oculto"></div>
+        <div id="cadastro-sucesso" class="login-erro oculto" style="background:rgba(42,157,143,0.12); color:var(--cor-acento-escuro);"></div>
+
+        <div class="campo">
+          <label for="cliente-nome">Nome completo</label>
+          <input type="text" id="cliente-nome" required />
+        </div>
+
+        <div class="campo">
+          <label for="cliente-contato">Telefone / WhatsApp</label>
+          <input type="tel" id="cliente-contato" required />
+        </div>
+
+        <div class="campo">
+          <label for="cliente-placa">Placa do veículo</label>
+          <input type="text" id="cliente-placa" maxlength="8" style="text-transform:uppercase" required />
+        </div>
+
+        <div class="campo">
+          <label for="cliente-modelo">Modelo do veículo</label>
+          <input type="text" id="cliente-modelo" />
+        </div>
+
+        <button type="submit" class="btn btn-primario btn-bloco">Cadastrar</button>
+      </form>
+
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

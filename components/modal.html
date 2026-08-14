@@ -1,0 +1,15 @@
+<!-- ============================================================
+     components/modal.html
+     Modal genérico e reutilizável. Injetado uma vez por página.
+     O conteúdo interno (#modal-corpo) é preenchido via JS
+     por quem abrir o modal (clientes.js, etc.).
+     ============================================================ -->
+<div class="modal-overlay oculto" id="modal-overlay">
+  <div class="modal-caixa">
+    <div class="modal-cabecalho">
+      <h3 id="modal-titulo">Título</h3>
+      <button type="button" id="modal-fechar" class="modal-fechar" aria-label="Fechar">×</button>
+    </div>
+    <div class="modal-corpo" id="modal-corpo"></div>
+  </div>
+</div>

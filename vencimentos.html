@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vencimentos — Estacionamento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/tables.css" />
+</head>
+<body>
+
+  <div class="shell">
+    <div id="sidebar-container"></div>
+
+    <div>
+      <div id="header-container"></div>
+
+      <main class="conteudo">
+        <div class="pagina-titulo">
+          <h1>Vencimentos</h1>
+          <p>Mensalidades vencidas ou perto de vencer</p>
+        </div>
+
+        <div class="cartao">
+          <div class="tabela-wrapper">
+            <table class="tabela">
+              <thead>
+                <tr>
+                  <th>Placa</th>
+                  <th>Nome</th>
+                  <th>Vencimento</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-corpo"></tbody>
+            </table>
+            <div id="mensagem-vazio" class="mensagem-vazio oculto">Nenhuma mensalidade vencendo. 🎉</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="js/vencimentos.js"></script>
+</body>
+</html>

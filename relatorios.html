@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relatórios — Estacionamento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/tables.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="shell">
+    <div id="sidebar-container"></div>
+
+    <div>
+      <div id="header-container"></div>
+
+      <main class="conteudo">
+        <div class="pagina-titulo">
+          <h1>Relatórios</h1>
+          <p>Faturamento diário e veículos mais frequentes</p>
+        </div>
+
+        <div class="cartao" style="margin-bottom: var(--espaco-4);">
+          <div class="barra-filtros">
+            <div class="campo">
+              <label for="filtro-inicio">De</label>
+              <input type="date" id="filtro-inicio" />
+            </div>
+            <div class="campo">
+              <label for="filtro-fim">Até</label>
+              <input type="date" id="filtro-fim" />
+            </div>
+            <button id="btn-filtrar" class="btn btn-secundario">Filtrar</button>
+          </div>
+        </div>
+
+        <div class="cartao" style="margin-bottom: var(--espaco-4);">
+          <h3 style="margin-bottom: var(--espaco-3);">Faturamento por dia</h3>
+          <div class="grafico-wrapper">
+            <canvas id="grafico-faturamento" height="120"></canvas>
+          </div>
+        </div>
+
+        <div class="cartao">
+          <h3 style="margin-bottom: var(--espaco-3);">Placas mais frequentes no período</h3>
+          <div class="tabela-wrapper">
+            <table class="tabela">
+              <thead>
+                <tr><th>Placa</th><th>Nome</th><th>Nº de visitas</th></tr>
+              </thead>
+              <tbody id="tabela-frequentes"></tbody>
+            </table>
+            <div id="vazio-frequentes" class="mensagem-vazio oculto">Sem dados no período.</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="js/relatorios.js"></script>
+</body>
+</html>

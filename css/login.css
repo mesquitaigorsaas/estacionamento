@@ -1,0 +1,142 @@
+/* ============================================================
+   css/login.css
+   Estilos exclusivos da index.html (tela inicial / login)
+   ============================================================ */
+
+.tela-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, var(--cor-primaria) 0%, var(--cor-primaria-clara) 100%);
+  padding: var(--espaco-4);
+}
+
+.login-caixa {
+  width: 100%;
+  max-width: 400px;
+  background: var(--cor-superficie);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  padding: var(--espaco-6) var(--espaco-5);
+}
+
+.login-topo {
+  text-align: center;
+  margin-bottom: var(--espaco-5);
+}
+
+.login-topo .logo {
+ width: 100%; max-width: 220px;
+ height: auto;
+  margin: 0 auto var(--espaco-3);
+}
+
+.login-topo p {
+  color: var(--cor-texto-suave);
+  font-size: 0.9375rem;
+  margin-top: 4px;
+}
+
+/* Abas: "Sou funcionário" / "Cadastrar cliente" */
+.login-abas {
+  display: flex;
+  background: var(--cor-fundo);
+  border-radius: var(--raio);
+  padding: 4px;
+  margin-bottom: var(--espaco-4);
+}
+
+.login-aba {
+  flex: 1;
+  text-align: center;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.login-aba.ativa {
+  background: var(--cor-superficie);
+  color: var(--cor-primaria);
+  box-shadow: var(--sombra);
+}
+
+.campo {
+  margin-bottom: var(--espaco-3);
+}
+
+.campo label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--cor-texto);
+  margin-bottom: 6px;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  background: var(--cor-superficie);
+}
+
+.campo input:focus,
+.campo select:focus {
+  outline: 2px solid var(--cor-acento);
+  outline-offset: 1px;
+  border-color: var(--cor-acento);
+}
+
+.campo-senha-wrapper {
+  position: relative;
+}
+
+.campo-senha-wrapper button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  color: var(--cor-texto-suave);
+}
+
+.login-links {
+  display: flex;
+  justify-content: flex-end;
+  margin: -8px 0 var(--espaco-3);
+}
+
+.login-links a {
+  font-size: 0.8125rem;
+}
+
+.login-erro {
+  background: rgba(231, 111, 81, 0.1);
+  color: var(--cor-perigo);
+  border-radius: var(--raio);
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  margin-bottom: var(--espaco-3);
+}
+
+/* ------------------------------------------------------------
+   Responsivo — telas bem estreitas: reduz padding da caixa
+   ------------------------------------------------------------ */
+@media (max-width: 420px) {
+  .login-caixa {
+    padding: var(--espaco-5) var(--espaco-4);
+  }
+}

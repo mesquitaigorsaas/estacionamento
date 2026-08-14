@@ -1,0 +1,216 @@
+/* ============================================================
+   css/dashboard.css
+   Layout das páginas internas: sidebar fixa + topo + conteúdo.
+   Usado por dashboard.html e todas as páginas internas
+   (mesma estrutura de shell em todas elas).
+   ============================================================ */
+
+.shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+/* ------------------------------------------------------------
+   Sidebar
+   ------------------------------------------------------------ */
+.sidebar {
+  background: var(--cor-primaria);
+  color: #fff;
+  padding: var(--espaco-4) 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-logo {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: var(--espaco-3);
+}
+
+.sidebar-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  padding: var(--espaco-3) var(--espaco-4);
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 var(--espaco-2);
+  overflow-y: auto;
+}
+
+.sidebar-item {
+  display: block;
+  padding: 10px 14px;
+  border-radius: var(--raio);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: background-color 0.15s ease;
+}
+
+.sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.sidebar-item.ativo {
+  background: var(--cor-acento);
+  color: #fff;
+}
+
+.sidebar-item-sair {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: var(--espaco-2);
+  padding-top: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------
+   Topo
+   ------------------------------------------------------------ */
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-3);
+  background: var(--cor-superficie);
+  border-bottom: 1px solid var(--cor-borda);
+  padding: var(--espaco-3) var(--espaco-4);
+}
+
+.topo-btn-menu {
+  display: none;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+#topo-titulo-pagina {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topo-usuario {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+  flex-shrink: 0;
+}
+
+.topo-usuario-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  font-size: 0.875rem;
+  min-width: 0;
+  max-width: 140px;
+}
+
+.topo-usuario-info span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* ------------------------------------------------------------
+   Área de conteúdo
+   ------------------------------------------------------------ */
+.conteudo {
+  padding: var(--espaco-4);
+  min-width: 0;
+}
+
+/* ------------------------------------------------------------
+   Grade de indicadores (cards do dashboard)
+   ------------------------------------------------------------ */
+.grade-indicadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--espaco-3);
+  margin-bottom: var(--espaco-4);
+}
+
+.indicador {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: var(--espaco-4);
+}
+
+.indicador-rotulo {
+  font-size: 0.8125rem;
+  color: var(--cor-texto-suave);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.indicador-valor {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin-top: 6px;
+}
+
+.indicador-alerta .indicador-valor { color: var(--cor-alerta); }
+.indicador-perigo .indicador-valor { color: var(--cor-perigo); }
+.indicador-sucesso .indicador-valor { color: var(--cor-acento-escuro); }
+
+/* ------------------------------------------------------------
+   Responsivo — tablet/mobile: sidebar vira off-canvas
+   ------------------------------------------------------------ */
+@media (max-width: 860px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(280px, 80vw);
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+  }
+
+  .sidebar.aberta {
+    transform: translateX(0);
+  }
+
+  .topo-btn-menu {
+    display: block;
+  }
+}
+
+/* ------------------------------------------------------------
+   Responsivo — telas bem estreitas: simplifica o topo
+   ------------------------------------------------------------ */
+@media (max-width: 480px) {
+  .topo {
+    padding: var(--espaco-2) var(--espaco-3);
+  }
+
+  .topo-usuario-info span:first-child {
+    display: none; /* esconde o nome, mantém só o badge de perfil */
+  }
+}

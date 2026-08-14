@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financeiro — Estacionamento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/tables.css" />
+</head>
+<body>
+
+  <div class="shell">
+    <div id="sidebar-container"></div>
+
+    <div>
+      <div id="header-container"></div>
+
+      <main class="conteudo">
+        <div class="pagina-titulo">
+          <h1>Financeiro</h1>
+          <p>Faturamento por período</p>
+        </div>
+
+        <div class="cartao" style="margin-bottom: var(--espaco-4);">
+          <div class="barra-filtros">
+            <div class="campo">
+              <label for="filtro-inicio">De</label>
+              <input type="date" id="filtro-inicio" />
+            </div>
+            <div class="campo">
+              <label for="filtro-fim">Até</label>
+              <input type="date" id="filtro-fim" />
+            </div>
+            <button id="btn-filtrar" class="btn btn-secundario">Filtrar</button>
+          </div>
+        </div>
+
+        <div class="grade-indicadores">
+          <div class="indicador indicador-sucesso">
+            <div class="indicador-rotulo">Faturamento total</div>
+            <div class="indicador-valor" id="ind-total">—</div>
+          </div>
+          <div class="indicador">
+            <div class="indicador-rotulo">Avulso (entrada/saída)</div>
+            <div class="indicador-valor" id="ind-avulso">—</div>
+          </div>
+          <div class="indicador">
+            <div class="indicador-rotulo">Mensalistas</div>
+            <div class="indicador-valor" id="ind-mensalistas">—</div>
+          </div>
+          <div class="indicador">
+            <div class="indicador-rotulo">Nº de movimentações</div>
+            <div class="indicador-valor" id="ind-qtd-movimentacoes">—</div>
+          </div>
+          <div class="indicador">
+            <div class="indicador-rotulo">Nº de pagamentos</div>
+            <div class="indicador-valor" id="ind-qtd-pagamentos">—</div>
+          </div>
+        </div>
+
+        <div class="cartao" style="margin-bottom: var(--espaco-4);">
+          <h3 style="margin-bottom: var(--espaco-3);">Movimentações avulsas (entrada/saída)</h3>
+          <div class="tabela-wrapper">
+            <table class="tabela">
+              <thead>
+                <tr><th>Placa</th><th>Nome</th><th>Saída</th><th>Valor</th></tr>
+              </thead>
+              <tbody id="tabela-movimentacoes"></tbody>
+            </table>
+            <div id="vazio-movimentacoes" class="mensagem-vazio oculto">Nenhuma movimentação no período.</div>
+          </div>
+        </div>
+
+        <div class="cartao">
+          <h3 style="margin-bottom: var(--espaco-3);">Pagamentos de mensalistas</h3>
+          <div class="tabela-wrapper">
+            <table class="tabela">
+              <thead>
+                <tr><th>Placa</th><th>Nome</th><th>Data</th><th>Forma</th><th>Valor</th></tr>
+              </thead>
+              <tbody id="tabela-pagamentos"></tbody>
+            </table>
+            <div id="vazio-pagamentos" class="mensagem-vazio oculto">Nenhum pagamento no período.</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="js/financeiro.js"></script>
+</body>
+</html>

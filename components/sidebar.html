@@ -1,0 +1,26 @@
+<!-- ============================================================
+     components/sidebar.html
+     Menu lateral injetado em toda página interna.
+     data-pagina identifica o item para marcar como "ativo".
+     data-perfis restringe a exibição (vazio = todos os perfis).
+     ============================================================ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <img src="assets/logo/logo.png" alt="" />
+  </div>
+
+  <nav class="sidebar-menu">
+    <a href="dashboard.html"     data-pagina="dashboard"     class="sidebar-item">📊 Dashboard</a>
+    <a href="entrada.html"       data-pagina="entrada"       class="sidebar-item">🅿️ Registrar entrada</a>
+    <a href="saida.html"         data-pagina="saida"         class="sidebar-item">🚪 Registrar saída</a>
+    <a href="clientes.html"      data-pagina="clientes"      class="sidebar-item">👥 Clientes/veículos</a>
+    <a href="historico.html"     data-pagina="historico"     class="sidebar-item">📋 Histórico</a>
+    <a href="mensalistas.html"   data-pagina="mensalistas"   class="sidebar-item">👤 Mensalistas</a>
+    <a href="financeiro.html"    data-pagina="financeiro"    class="sidebar-item" data-perfis="administrador,gerente">💰 Financeiro</a>
+    <a href="relatorios.html"    data-pagina="relatorios"    class="sidebar-item" data-perfis="administrador,gerente">📈 Relatórios</a>
+    <a href="vencimentos.html"   data-pagina="vencimentos"   class="sidebar-item">🔔 Vencimentos</a>
+    <a href="usuarios.html"      data-pagina="usuarios"      class="sidebar-item" data-perfis="administrador">👨‍💼 Usuários</a>
+    <a href="configuracoes.html" data-pagina="configuracoes" class="sidebar-item" data-perfis="administrador">⚙️ Configurações</a>
+    <a href="#"                  id="btn-sair"               class="sidebar-item" style="margin-top: auto;">🚪 Sair</a>
+  </nav>
+</aside>

@@ -1,0 +1,144 @@
+/* ============================================================
+   css/forms.css
+   Estilos dos formulários de operação: entrada, saída, etc.
+   ============================================================ */
+
+.pagina-titulo {
+  margin-bottom: var(--espaco-4);
+}
+
+.pagina-titulo p {
+  color: var(--cor-texto-suave);
+  margin-top: 2px;
+}
+
+.form-busca-placa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-2);
+  align-items: flex-end;
+  margin-bottom: var(--espaco-4);
+}
+
+.form-busca-placa .campo {
+  flex: 1;
+  min-width: 160px;
+  max-width: 260px;
+  margin-bottom: 0;
+}
+
+.form-busca-placa input {
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-size: 1.125rem;
+}
+
+.grade-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--espaco-3);
+}
+
+/* Grid de 3 colunas fixas (ex: formulário de nova mensalidade),
+   com quebra progressiva em telas menores. Usar no lugar de
+   style="grid-template-columns: repeat(3, 1fr)" inline. */
+.grade-form-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--espaco-3);
+}
+
+@media (max-width: 700px) {
+  .grade-form-3col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .grade-form-3col {
+    grid-template-columns: 1fr;
+  }
+
+  .form-busca-placa .campo {
+    max-width: none;
+  }
+
+  .form-busca-placa button {
+    width: 100%;
+  }
+}
+
+.info-veiculo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--espaco-3);
+  padding: var(--espaco-4);
+  background: var(--cor-fundo);
+  border-radius: var(--raio);
+  margin-bottom: var(--espaco-4);
+}
+
+.info-item .info-rotulo {
+  font-size: 0.75rem;
+  color: var(--cor-texto-suave);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.info-item .info-valor {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--cor-primaria);
+  margin-top: 2px;
+}
+
+.valor-destaque {
+  text-align: center;
+  padding: var(--espaco-4);
+  background: rgba(42, 157, 143, 0.08);
+  border-radius: var(--raio);
+  margin-bottom: var(--espaco-4);
+}
+
+.valor-destaque .indicador-rotulo {
+  color: var(--cor-acento-escuro);
+}
+
+.valor-destaque .valor-numero {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--cor-acento-escuro);
+}
+
+.mensagem-vazio {
+  text-align: center;
+  padding: var(--espaco-6) var(--espaco-4);
+  color: var(--cor-texto-suave);
+}
+
+/* Recibo/cupom — some da tela normal, só aparece ao imprimir */
+.recibo {
+  display: none;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .recibo, .recibo * {
+    visibility: visible;
+  }
+  .recibo {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    padding: 8px;
+  }
+  .recibo hr { border: none; border-top: 1px dashed #000; margin: 6px 0; }
+  .recibo .recibo-linha { display: flex; justify-content: space-between; }
+}

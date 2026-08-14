@@ -1,0 +1,148 @@
+/* ============================================
+   MODAL — Achei Vaga Estacionamentos
+   Compatível com components/modal.html + mensalistas.js
+   (.modal-overlay, .modal-caixa, .modal-cabecalho,
+    .modal-fechar, .modal-corpo, .campo, .modal-rodape)
+   ============================================ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeInOverlay 0.18s ease-out;
+}
+
+.modal-overlay.oculto {
+  display: none;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-caixa {
+  background: #ffffff;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: slideUpModal 0.22s ease-out;
+  overflow: hidden;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideUpModal {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Cabeçalho */
+.modal-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #eef1f4;
+  flex-shrink: 0;
+}
+
+.modal-cabecalho h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.modal-fechar {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.modal-fechar:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+/* Corpo — preenchido dinamicamente pelo mensalistas.js */
+.modal-corpo {
+  padding: 22px 24px;
+  overflow-y: auto;
+}
+
+/* Cada campo (JS já gera: <div class="campo"><label>...<input>) */
+.modal-corpo .campo {
+  display: grid;
+  grid-template-columns: 150px 1fr; /* label fixa + input flexível */
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.modal-corpo .campo label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #334155;
+  text-align: left;
+}
+
+.modal-corpo .campo input,
+.modal-corpo .campo select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #d9dee4;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  color: #0f172a;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
+}
+
+.modal-corpo .campo input:focus,
+.modal-corpo .campo select:focus {
+  outline: none;
+  border-color: #14a389; /* teal da marca */
+  box-shadow: 0 0 0 3px rgba(20, 163, 137, 0.15);
+}
+
+.modal-corpo .texto-suave {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 4px 0 14px;
+}
+
+/* Rodapé de ações — já gerado pelo mensalistas.js como
+   <div class="modal-rodape"><button class="btn btn-secundario">...</button>
+   Os estilos dos botões (.btn, .btn-primario, .btn-secundario)
+   ficam por conta do seu forms.css/style.css já existente. */
+.modal-rodape {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #eef1f4;
+}
+
+/* Responsivo — em telas pequenas, label acima do input */
+@media (max-width: 480px) {
+  .modal-corpo .campo {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}

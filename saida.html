@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrar Saída — Estacionamento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+</head>
+<body>
+
+  <div class="shell">
+    <div id="sidebar-container"></div>
+
+    <div>
+      <div id="header-container"></div>
+
+      <main class="conteudo">
+        <div class="pagina-titulo">
+          <h1>Registrar saída</h1>
+          <p>Digite a placa para calcular o valor e finalizar</p>
+        </div>
+
+        <div class="cartao">
+          <form id="form-busca" class="form-busca-placa">
+            <div class="campo">
+              <label for="campo-placa">Placa</label>
+              <input type="text" id="campo-placa" maxlength="8" placeholder="ABC1D23" required autofocus />
+            </div>
+            <button type="submit" class="btn btn-secundario">Consultar</button>
+          </form>
+
+          <div id="aviso-placa" class="login-erro oculto"></div>
+
+          <div id="bloco-resultado" class="oculto">
+            <div class="info-veiculo">
+              <div class="info-item">
+                <div class="info-rotulo">Nome</div>
+                <div class="info-valor" id="info-nome">—</div>
+              </div>
+              <div class="info-item">
+                <div class="info-rotulo">Modelo</div>
+                <div class="info-valor" id="info-modelo">—</div>
+              </div>
+              <div class="info-item">
+                <div class="info-rotulo">Cor</div>
+                <div class="info-valor" id="info-cor">—</div>
+              </div>
+              <div class="info-item">
+                <div class="info-rotulo">Entrada</div>
+                <div class="info-valor" id="info-entrada">—</div>
+              </div>
+              <div class="info-item">
+                <div class="info-rotulo">Tempo estacionado</div>
+                <div class="info-valor" id="info-tempo">—</div>
+              </div>
+            </div>
+
+            <div class="valor-destaque">
+              <div class="indicador-rotulo">Valor a pagar</div>
+              <div class="valor-numero" id="info-valor">R$ 0,00</div>
+            </div>
+
+            <button id="btn-finalizar-saida" class="btn btn-primario btn-bloco">
+              🟢 Finalizar saída
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Recibo impresso -->
+  <div class="recibo" id="recibo">
+    <div style="text-align:center;">
+      <strong id="recibo-nome-estacionamento">Estacionamento</strong>
+    </div>
+    <hr />
+    <div class="recibo-linha"><span>Placa:</span><span id="recibo-placa">—</span></div>
+    <div class="recibo-linha"><span>Entrada:</span><span id="recibo-entrada">—</span></div>
+    <div class="recibo-linha"><span>Saída:</span><span id="recibo-saida">—</span></div>
+    <div class="recibo-linha"><span>Valor:</span><span id="recibo-valor">—</span></div>
+    <div class="recibo-linha"><span>Funcionário:</span><span id="recibo-funcionario">—</span></div>
+    <hr />
+    <div style="text-align:center;">Obrigado pela preferência!</div>
+  </div>
+
+  <script type="module" src="js/saida.js"></script>
+</body>
+</html>

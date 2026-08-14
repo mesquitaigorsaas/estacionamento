@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Estacionamento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+
+  <div class="shell">
+    <div id="sidebar-container"></div>
+
+    <div>
+      <div id="header-container"></div>
+
+      <main class="conteudo">
+        <h1>Visão geral</h1>
+        <p class="texto-suave" style="margin-bottom: var(--espaco-4);">Resumo da operação de hoje</p>
+
+        <div class="grade-indicadores">
+          <div class="indicador">
+            <div class="indicador-rotulo">Veículos estacionados</div>
+            <div class="indicador-valor" id="ind-estacionados">—</div>
+          </div>
+          <div class="indicador">
+            <div class="indicador-rotulo">Entradas hoje</div>
+            <div class="indicador-valor" id="ind-entradas-hoje">—</div>
+          </div>
+          <div class="indicador">
+            <div class="indicador-rotulo">Saídas hoje</div>
+            <div class="indicador-valor" id="ind-saidas-hoje">—</div>
+          </div>
+          <div class="indicador indicador-sucesso">
+            <div class="indicador-rotulo">Faturamento hoje</div>
+            <div class="indicador-valor" id="ind-faturamento-hoje">—</div>
+          </div>
+          <div class="indicador">
+            <div class="indicador-rotulo">Mensalistas ativos</div>
+            <div class="indicador-valor" id="ind-mensalistas-ativos">—</div>
+          </div>
+          <div class="indicador indicador-alerta">
+            <div class="indicador-rotulo">Vencem em 3 dias</div>
+            <div class="indicador-valor" id="ind-vencem-em-breve">—</div>
+          </div>
+          <div class="indicador indicador-perigo">
+            <div class="indicador-rotulo">Mensalidades vencidas</div>
+            <div class="indicador-valor" id="ind-vencidas">—</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
