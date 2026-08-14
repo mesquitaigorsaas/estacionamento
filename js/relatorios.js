@@ -4,7 +4,8 @@
 // Gráfico de faturamento diário (Chart.js) + placas mais frequentes.
 // ============================================================
 
-import { exigirLogin, fazerLogout } from './auth.js';
+import { exigirLogin } from './auth.js';
+import { montarShell } from './utils/layout.js';
 import { formatarMoeda } from './utils/formatadores.js';
 import { listarMovimentacoesFinalizadas } from './services/movimentacoes.js';
 import { listarPagamentos } from './services/pagamentos.js';
@@ -16,40 +17,11 @@ async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
 
-  await montarShell(usuario);
+  await montarShell(usuario, NOME_PAGINA, 'Relatórios');
   definirPeriodoPadrao();
   await carregarDados();
 
   document.getElementById('btn-filtrar').addEventListener('click', carregarDados);
-}
-
-// ------------------------------------------------------------
-// Shell (header/sidebar)
-// ------------------------------------------------------------
-async function montarShell(usuario) {
-  const [htmlHeader, htmlSidebar] = await Promise.all([
-    fetch('components/header.html').then((r) => r.text()),
-    fetch('components/sidebar.html').then((r) => r.text()),
-  ]);
-
-  document.getElementById('header-container').innerHTML = htmlHeader;
-  document.getElementById('sidebar-container').innerHTML = htmlSidebar;
-
-  document.getElementById('topo-usuario-nome').textContent = usuario.nome;
-  document.getElementById('topo-usuario-perfil').textContent = usuario.perfil;
-  document.getElementById('topo-titulo-pagina').textContent = 'Relatórios';
-
-  document.getElementById('btn-sair').addEventListener('click', fazerLogout);
-
-  document.querySelectorAll('.sidebar-item[data-perfis]').forEach((item) => {
-    if (!item.dataset.perfis.split(',').includes(usuario.perfil)) item.remove();
-  });
-
-  const itemAtivo = document.querySelector(`.sidebar-item[data-pagina="${NOME_PAGINA}"]`);
-  if (itemAtivo) itemAtivo.classList.add('ativo');
-
-  const sidebar = document.getElementById('sidebar');
-  document.getElementById('btn-menu-mobile').addEventListener('click', () => sidebar.classList.toggle('aberta'));
 }
 
 // ------------------------------------------------------------
@@ -164,9 +136,9 @@ function renderizarPlacasFrequentes(movimentacoes) {
 
   corpo.innerHTML = top5.map((item) => `
     <tr>
-      <td class="tabela-placa">${item.placa}</td>
-      <td>${item.nome}</td>
-      <td>${item.vezes}</td>
+      <td class="tabela-placa" data-label="Placa">${item.placa}</td>
+      <td data-label="Nome">${item.nome}</td>
+      <td data-label="Nº de visitas">${item.vezes}</td>
     </tr>
   `).join('');
 }

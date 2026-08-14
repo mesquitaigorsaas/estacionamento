@@ -5,7 +5,8 @@
 // ============================================================
 
 import { supabase } from './supabase.js';
-import { exigirLogin, fazerLogout } from './auth.js';
+import { exigirLogin } from './auth.js';
+import { montarShell } from './utils/layout.js';
 import { formatarDataHora, formatarDuracao, formatarMoeda } from './utils/formatadores.js';
 import { minutosEntre } from './utils/calculos.js';
 
@@ -15,39 +16,10 @@ async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
 
-  await montarShell(usuario);
+  await montarShell(usuario, NOME_PAGINA, 'Histórico');
   await carregarHistorico();
 
   document.getElementById('btn-filtrar').addEventListener('click', carregarHistorico);
-}
-
-// ------------------------------------------------------------
-// Shell (header/sidebar)
-// ------------------------------------------------------------
-async function montarShell(usuario) {
-  const [htmlHeader, htmlSidebar] = await Promise.all([
-    fetch('components/header.html').then((r) => r.text()),
-    fetch('components/sidebar.html').then((r) => r.text()),
-  ]);
-
-  document.getElementById('header-container').innerHTML = htmlHeader;
-  document.getElementById('sidebar-container').innerHTML = htmlSidebar;
-
-  document.getElementById('topo-usuario-nome').textContent = usuario.nome;
-  document.getElementById('topo-usuario-perfil').textContent = usuario.perfil;
-  document.getElementById('topo-titulo-pagina').textContent = 'Histórico';
-
-  document.getElementById('btn-sair').addEventListener('click', fazerLogout);
-
-  document.querySelectorAll('.sidebar-item[data-perfis]').forEach((item) => {
-    if (!item.dataset.perfis.split(',').includes(usuario.perfil)) item.remove();
-  });
-
-  const itemAtivo = document.querySelector(`.sidebar-item[data-pagina="${NOME_PAGINA}"]`);
-  if (itemAtivo) itemAtivo.classList.add('ativo');
-
-  const sidebar = document.getElementById('sidebar');
-  document.getElementById('btn-menu-mobile').addEventListener('click', () => sidebar.classList.toggle('aberta'));
 }
 
 // ------------------------------------------------------------
@@ -105,13 +77,13 @@ function renderizarLinhas(lista) {
 
     return `
       <tr>
-        <td class="tabela-placa">${m.veiculos?.placa ?? '—'}</td>
-        <td>${m.veiculos?.clientes?.nome ?? '—'}</td>
-        <td>${formatarDataHora(m.entrada)}</td>
-        <td>${m.saida ? formatarDataHora(m.saida) : '—'}</td>
-        <td>${duracao}</td>
-        <td>${m.valor ? formatarMoeda(m.valor) : '—'}</td>
-        <td>${statusBadge}</td>
+        <td class="tabela-placa" data-label="Placa">${m.veiculos?.placa ?? '—'}</td>
+        <td data-label="Nome">${m.veiculos?.clientes?.nome ?? '—'}</td>
+        <td data-label="Entrada">${formatarDataHora(m.entrada)}</td>
+        <td data-label="Saída">${m.saida ? formatarDataHora(m.saida) : '—'}</td>
+        <td data-label="Duração">${duracao}</td>
+        <td data-label="Valor">${m.valor ? formatarMoeda(m.valor) : '—'}</td>
+        <td data-label="Status">${statusBadge}</td>
       </tr>
     `;
   }).join('');

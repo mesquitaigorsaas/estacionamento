@@ -4,7 +4,8 @@
 // Lista, filtra e edita clientes/veículos.
 // ============================================================
 
-import { exigirLogin, fazerLogout } from './auth.js';
+import { exigirLogin } from './auth.js';
+import { montarShell } from './utils/layout.js';
 import { listarVeiculos, atualizarClienteEVeiculo } from './services/veiculos.js';
 
 const NOME_PAGINA = 'clientes';
@@ -14,42 +15,13 @@ async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
 
-  await montarShell(usuario);
+  await montarShell(usuario, NOME_PAGINA, 'Clientes / Veículos');
+  document.getElementById('modal-container').innerHTML = await fetch('components/modal.html').then((r) => r.text());
+
   await carregarTabela();
 
   document.getElementById('campo-busca').addEventListener('input', aplicarFiltro);
   document.getElementById('modal-fechar').addEventListener('click', fecharModal);
-}
-
-// ------------------------------------------------------------
-// Shell (header/sidebar/modal)
-// ------------------------------------------------------------
-async function montarShell(usuario) {
-  const [htmlHeader, htmlSidebar, htmlModal] = await Promise.all([
-    fetch('components/header.html').then((r) => r.text()),
-    fetch('components/sidebar.html').then((r) => r.text()),
-    fetch('components/modal.html').then((r) => r.text()),
-  ]);
-
-  document.getElementById('header-container').innerHTML = htmlHeader;
-  document.getElementById('sidebar-container').innerHTML = htmlSidebar;
-  document.getElementById('modal-container').innerHTML = htmlModal;
-
-  document.getElementById('topo-usuario-nome').textContent = usuario.nome;
-  document.getElementById('topo-usuario-perfil').textContent = usuario.perfil;
-  document.getElementById('topo-titulo-pagina').textContent = 'Clientes / Veículos';
-
-  document.getElementById('btn-sair').addEventListener('click', fazerLogout);
-
-  document.querySelectorAll('.sidebar-item[data-perfis]').forEach((item) => {
-    if (!item.dataset.perfis.split(',').includes(usuario.perfil)) item.remove();
-  });
-
-  const itemAtivo = document.querySelector(`.sidebar-item[data-pagina="${NOME_PAGINA}"]`);
-  if (itemAtivo) itemAtivo.classList.add('ativo');
-
-  const sidebar = document.getElementById('sidebar');
-  document.getElementById('btn-menu-mobile').addEventListener('click', () => sidebar.classList.toggle('aberta'));
 }
 
 // ------------------------------------------------------------
@@ -73,16 +45,16 @@ function renderizarLinhas(lista) {
 
   corpo.innerHTML = lista.map((v) => `
     <tr>
-      <td class="tabela-placa">${v.placa}</td>
-      <td>${v.clientes?.nome ?? '—'}</td>
-      <td>${v.clientes?.contato ?? '—'}</td>
-      <td>${[v.modelo, v.cor].filter(Boolean).join(' — ') || '—'}</td>
-      <td>
+      <td class="tabela-placa" data-label="Placa">${v.placa}</td>
+      <td data-label="Nome">${v.clientes?.nome ?? '—'}</td>
+      <td data-label="Contato">${v.clientes?.contato ?? '—'}</td>
+      <td data-label="Modelo/Cor">${[v.modelo, v.cor].filter(Boolean).join(' — ') || '—'}</td>
+      <td data-label="Tipo">
         <span class="badge ${v.clientes?.tipo === 'mensalista' ? 'badge-sucesso' : 'badge-alerta'}">
           ${v.clientes?.tipo === 'mensalista' ? 'Mensalista' : 'Passagem'}
         </span>
       </td>
-      <td class="tabela-acoes">
+      <td class="tabela-acoes" data-label="Ações">
         <button class="btn-icone" data-editar="${v.id}" title="Editar">✏️</button>
       </td>
     </tr>

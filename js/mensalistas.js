@@ -5,7 +5,8 @@
 // lista, edita cadastro e registra pagamento.
 // ============================================================
 
-import { exigirLogin, fazerLogout, usuarioAtual } from './auth.js';
+import { exigirLogin, usuarioAtual } from './auth.js';
+import { montarShell } from './utils/layout.js';
 import { formatarPlaca, formatarMoeda } from './utils/formatadores.js';
 import { placaValida, campoPreenchido } from './utils/validacoes.js';
 import { buscarVeiculoPorPlaca, criarClienteEVeiculo, atualizarClienteEVeiculo } from './services/veiculos.js';
@@ -32,7 +33,8 @@ async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
 
-  await montarShell(usuario);
+  await montarShell(usuario, NOME_PAGINA, 'Mensalistas');
+  document.getElementById('modal-container').innerHTML = await fetch('components/modal.html').then((r) => r.text());
 
   diasAviso = await buscarDiasAvisoVencimento();
   await carregarTabela(usuario);
@@ -40,37 +42,6 @@ async function iniciar() {
   document.getElementById('form-busca').addEventListener('submit', aoConsultarPlaca);
   document.getElementById('btn-cadastrar-mensalidade').addEventListener('click', aoCadastrarMensalidade);
   document.getElementById('modal-fechar').addEventListener('click', fecharModal);
-}
-
-// ------------------------------------------------------------
-// Shell (header/sidebar/modal)
-// ------------------------------------------------------------
-async function montarShell(usuario) {
-  const [htmlHeader, htmlSidebar, htmlModal] = await Promise.all([
-    fetch('components/header.html').then((r) => r.text()),
-    fetch('components/sidebar.html').then((r) => r.text()),
-    fetch('components/modal.html').then((r) => r.text()),
-  ]);
-
-  document.getElementById('header-container').innerHTML = htmlHeader;
-  document.getElementById('sidebar-container').innerHTML = htmlSidebar;
-  document.getElementById('modal-container').innerHTML = htmlModal;
-
-  document.getElementById('topo-usuario-nome').textContent = usuario.nome;
-  document.getElementById('topo-usuario-perfil').textContent = usuario.perfil;
-  document.getElementById('topo-titulo-pagina').textContent = 'Mensalistas';
-
-  document.getElementById('btn-sair').addEventListener('click', fazerLogout);
-
-  document.querySelectorAll('.sidebar-item[data-perfis]').forEach((item) => {
-    if (!item.dataset.perfis.split(',').includes(usuario.perfil)) item.remove();
-  });
-
-  const itemAtivo = document.querySelector(`.sidebar-item[data-pagina="${NOME_PAGINA}"]`);
-  if (itemAtivo) itemAtivo.classList.add('ativo');
-
-  const sidebar = document.getElementById('sidebar');
-  document.getElementById('btn-menu-mobile').addEventListener('click', () => sidebar.classList.toggle('aberta'));
 }
 
 // ------------------------------------------------------------
@@ -189,12 +160,12 @@ async function carregarTabela(usuario) {
 
   corpo.innerHTML = lista.map((m) => `
     <tr>
-      <td class="tabela-placa">${m.veiculos?.placa ?? '—'}</td>
-      <td>${m.clientes?.nome ?? '—'}</td>
-      <td>${formatarMoeda(m.valor_mensal)}</td>
-      <td>${new Date(`${m.vencimento}T00:00:00`).toLocaleDateString('pt-BR')}</td>
-      <td>${badgePorStatus[m.status] ?? m.status}</td>
-      <td class="tabela-acoes">
+      <td class="tabela-placa" data-label="Placa">${m.veiculos?.placa ?? '—'}</td>
+      <td data-label="Nome">${m.clientes?.nome ?? '—'}</td>
+      <td data-label="Valor">${formatarMoeda(m.valor_mensal)}</td>
+      <td data-label="Vencimento">${new Date(`${m.vencimento}T00:00:00`).toLocaleDateString('pt-BR')}</td>
+      <td data-label="Status">${badgePorStatus[m.status] ?? m.status}</td>
+      <td class="tabela-acoes" data-label="Ações">
         <button class="btn btn-secundario" data-ver="${m.id}" style="padding:6px 12px; font-size:0.8125rem;">✏️ Editar</button>
         ${pagosRecentemente.has(m.id) ? '<span class="badge badge-sucesso">✔ Pago</span>' : ''}
         <button class="btn btn-secundario" data-pagar="${m.id}" style="padding:6px 12px; font-size:0.8125rem;">Registrar pagamento</button>

@@ -1,54 +1,230 @@
 /* ============================================================
    css/tables.css
-   Estilos de tabelas e containers responsivos.
+   Estilo de tabelas de listagem + modal reutilizável.
    ============================================================ */
 
-.tabela-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  margin-top: var(--espaco-2, 8px);
-  border-radius: var(--raio, 8px);
+.barra-filtros {
+  display: flex;
+  gap: var(--espaco-3);
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: var(--espaco-4);
 }
 
-.tabela {
+.barra-filtros .campo {
+  margin-bottom: 0;
+  min-width: 180px;
+}
+
+@media (max-width: 480px) {
+  .barra-filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .barra-filtros .campo {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .barra-filtros .btn {
+    width: 100%;
+  }
+}
+
+.tabela-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table.tabela {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
   font-size: 0.9375rem;
+}
+
+table.tabela th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--cor-texto-suave);
+  border-bottom: 2px solid var(--cor-borda);
   white-space: nowrap;
 }
 
-.tabela th,
-.tabela td {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--cor-borda, #E2E8F0);
+table.tabela td {
+  padding: 12px;
+  border-bottom: 1px solid var(--cor-borda);
+  vertical-align: middle;
 }
 
-.tabela th {
-  background-color: var(--cor-fundo, #F7F9FB);
-  color: var(--cor-texto-suave, #6B7280);
-  font-size: 0.75rem;
+table.tabela tbody tr:hover {
+  background: var(--cor-fundo);
+}
+
+.tabela-placa {
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
-.tabela tbody tr:hover {
-  background-color: rgba(20, 33, 61, 0.02);
+.tabela-acoes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
 
-.mensagem-vazio {
-  text-align: center;
-  padding: var(--espaco-4, 24px);
-  color: var(--cor-texto-suave, #6B7280);
-  font-style: italic;
+.btn-icone {
+  background: none;
+  border: 1px solid var(--cor-borda);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 0.9375rem;
 }
 
-@media (max-width: 768px) {
-  .tabela th,
-  .tabela td {
-    padding: 10px 12px;
-    font-size: 0.875rem;
+.btn-icone:hover {
+  background: var(--cor-fundo);
+}
+
+/* ------------------------------------------------------------
+   Responsivo — mobile: tabela vira lista de cards
+   Cada linha (<tr>) some do formato de tabela e passa a ser um
+   cartão; cada célula (<td>) mostra o rótulo da coluna (via
+   data-label, adicionado nos <td> gerados pelo JS de cada página)
+   à esquerda e o valor à direita.
+   ------------------------------------------------------------ */
+@media (max-width: 700px) {
+  .tabela-wrapper {
+    overflow-x: visible;
   }
+
+  table.tabela thead {
+    display: none;
+  }
+
+  table.tabela,
+  table.tabela tbody,
+  table.tabela tr {
+    display: block;
+    width: 100%;
+  }
+
+  table.tabela tr {
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    margin-bottom: var(--espaco-3);
+    padding: var(--espaco-3);
+  }
+
+  table.tabela td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--espaco-3);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cor-borda);
+    text-align: right;
+  }
+
+  table.tabela td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  table.tabela td::before {
+    content: attr(data-label);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--cor-texto-suave);
+    text-align: left;
+    flex-shrink: 0;
+  }
+
+  /* Placa vira o "cabeçalho" do card: maior, sem rótulo repetido */
+  table.tabela td.tabela-placa {
+    display: block;
+    font-size: 1.125rem;
+    text-align: left;
+    padding-top: 0;
+    padding-bottom: 10px;
+    margin-bottom: 4px;
+    border-bottom: 2px solid var(--cor-borda);
+  }
+
+  table.tabela td.tabela-placa::before {
+    content: none;
+  }
+
+  /* Ações: já é autoexplicativo (botões/links), não precisa de rótulo */
+  table.tabela td.tabela-acoes {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  table.tabela td.tabela-acoes::before {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   Modal
+   ------------------------------------------------------------ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 33, 61, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: var(--espaco-3);
+}
+
+.modal-caixa {
+  background: var(--cor-superficie);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+.modal-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--espaco-3) var(--espaco-4);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.modal-fechar {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--cor-texto-suave);
+}
+
+.modal-corpo {
+  padding: var(--espaco-4);
+}
+
+.modal-rodape {
+  display: flex;
+  gap: var(--espaco-2);
+  margin-top: var(--espaco-4);
+}
+
+.modal-rodape .btn {
+  flex: 1;
 }

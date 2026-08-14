@@ -17,21 +17,24 @@
 .sidebar {
   background: var(--cor-primaria);
   color: #fff;
-  padding: var(--espaco-4) 0;
+  padding: 0 0 var(--espaco-3) 0;
   display: flex;
   flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar-logo {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: var(--espaco-3);
 }
 
 .sidebar-logo img {
   display: block;
   width: 100%;
   height: auto;
-  background: #fff;
+  background: linear-gradient(90deg, #F4F4F4, #FBFBFB, #F4F4F4);
   padding: var(--espaco-3) var(--espaco-4);
 }
 
@@ -39,8 +42,10 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 0 var(--espaco-2);
+  padding: var(--espaco-2) var(--espaco-2) 0;
   overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .sidebar-item {
@@ -78,15 +83,14 @@
 
 /* ------------------------------------------------------------
    Topo
+   Só existe pra abrir o menu no mobile (☰). Sem nome de usuário,
+   sem badge de função, sem barra visível — o título vem do <h1>
+   de cada página (.pagina-titulo), centralizado.
    ------------------------------------------------------------ */
 .topo {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--espaco-3);
-  background: var(--cor-superficie);
-  border-bottom: 1px solid var(--cor-borda);
-  padding: var(--espaco-3) var(--espaco-4);
+  padding: var(--espaco-3) var(--espaco-4) 0;
 }
 
 .topo-btn-menu {
@@ -94,47 +98,21 @@
   flex-shrink: 0;
   background: none;
   border: none;
-  font-size: 1.25rem;
+  font-size: 1.75rem;
+  line-height: 1;
   cursor: pointer;
 }
 
-#topo-titulo-pagina {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
+#topo-titulo-pagina,
 .topo-usuario {
-  display: flex;
-  align-items: center;
-  gap: var(--espaco-3);
-  flex-shrink: 0;
-}
-
-.topo-usuario-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-  font-size: 0.875rem;
-  min-width: 0;
-  max-width: 140px;
-}
-
-.topo-usuario-info span:first-child {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
+  display: none;
 }
 
 /* ------------------------------------------------------------
    Área de conteúdo
    ------------------------------------------------------------ */
 .conteudo {
-  padding: var(--espaco-4);
+  padding: var(--espaco-3) var(--espaco-4) var(--espaco-4);
   min-width: 0;
 }
 
@@ -179,7 +157,7 @@
    ------------------------------------------------------------ */
 @media (max-width: 860px) {
   .shell {
-    grid-template-columns: 1fr;
+    display: block;
   }
 
   .sidebar {
@@ -188,6 +166,7 @@
     bottom: 0;
     left: 0;
     width: min(280px, 80vw);
+    height: auto;
     z-index: 100;
     transform: translateX(-100%);
     transition: transform 0.2s ease;
@@ -203,14 +182,10 @@
 }
 
 /* ------------------------------------------------------------
-   Responsivo — telas bem estreitas: simplifica o topo
+   Responsivo — telas bem estreitas: aperta um pouco o topo
    ------------------------------------------------------------ */
 @media (max-width: 480px) {
   .topo {
-    padding: var(--espaco-2) var(--espaco-3);
-  }
-
-  .topo-usuario-info span:first-child {
-    display: none; /* esconde o nome, mantém só o badge de perfil */
+    padding: var(--espaco-2) var(--espaco-3) 0;
   }
 }

@@ -5,7 +5,8 @@
 // atalho de aviso via WhatsApp.
 // ============================================================
 
-import { exigirLogin, fazerLogout } from './auth.js';
+import { exigirLogin } from './auth.js';
+import { montarShell } from './utils/layout.js';
 import { listarMensalidades, buscarDiasAvisoVencimento, sincronizarStatus } from './services/mensalidades.js';
 import { linkWhatsapp, montarAvisoVencimento } from './utils/whatsapp.js';
 
@@ -15,37 +16,8 @@ async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
 
-  await montarShell(usuario);
+  await montarShell(usuario, NOME_PAGINA, 'Vencimentos');
   await carregarTabela();
-}
-
-// ------------------------------------------------------------
-// Shell (header/sidebar)
-// ------------------------------------------------------------
-async function montarShell(usuario) {
-  const [htmlHeader, htmlSidebar] = await Promise.all([
-    fetch('components/header.html').then((r) => r.text()),
-    fetch('components/sidebar.html').then((r) => r.text()),
-  ]);
-
-  document.getElementById('header-container').innerHTML = htmlHeader;
-  document.getElementById('sidebar-container').innerHTML = htmlSidebar;
-
-  document.getElementById('topo-usuario-nome').textContent = usuario.nome;
-  document.getElementById('topo-usuario-perfil').textContent = usuario.perfil;
-  document.getElementById('topo-titulo-pagina').textContent = 'Vencimentos';
-
-  document.getElementById('btn-sair').addEventListener('click', fazerLogout);
-
-  document.querySelectorAll('.sidebar-item[data-perfis]').forEach((item) => {
-    if (!item.dataset.perfis.split(',').includes(usuario.perfil)) item.remove();
-  });
-
-  const itemAtivo = document.querySelector(`.sidebar-item[data-pagina="${NOME_PAGINA}"]`);
-  if (itemAtivo) itemAtivo.classList.add('ativo');
-
-  const sidebar = document.getElementById('sidebar');
-  document.getElementById('btn-menu-mobile').addEventListener('click', () => sidebar.classList.toggle('aberta'));
 }
 
 // ------------------------------------------------------------
@@ -79,11 +51,11 @@ async function carregarTabela() {
 
     return `
       <tr>
-        <td class="tabela-placa">${m.veiculos?.placa ?? '—'}</td>
-        <td>${m.clientes?.nome ?? '—'}</td>
-        <td>${new Date(`${m.vencimento}T00:00:00`).toLocaleDateString('pt-BR')}</td>
-        <td>${badgePorStatus[m.status]}</td>
-        <td>
+        <td class="tabela-placa" data-label="Placa">${m.veiculos?.placa ?? '—'}</td>
+        <td data-label="Nome">${m.clientes?.nome ?? '—'}</td>
+        <td data-label="Vencimento">${new Date(`${m.vencimento}T00:00:00`).toLocaleDateString('pt-BR')}</td>
+        <td data-label="Status">${badgePorStatus[m.status]}</td>
+        <td class="tabela-acoes" data-label="Ações">
           ${link
             ? `<a href="${link}" target="_blank" class="btn btn-secundario" style="padding:6px 12px; font-size:0.8125rem;">💬 Avisar</a>`
             : '<span class="texto-suave">Sem contato</span>'}

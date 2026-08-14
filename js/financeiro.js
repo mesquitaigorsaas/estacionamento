@@ -4,7 +4,8 @@
 // Faturamento avulso + mensalistas dentro de um período.
 // ============================================================
 
-import { exigirLogin, fazerLogout } from './auth.js';
+import { exigirLogin } from './auth.js';
+import { montarShell } from './utils/layout.js';
 import { formatarDataHora, formatarMoeda } from './utils/formatadores.js';
 import { listarMovimentacoesFinalizadas } from './services/movimentacoes.js';
 import { listarPagamentos } from './services/pagamentos.js';
@@ -15,40 +16,11 @@ async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
 
-  await montarShell(usuario);
+  await montarShell(usuario, NOME_PAGINA, 'Financeiro');
   definirPeriodoPadrao();
   await carregarDados();
 
   document.getElementById('btn-filtrar').addEventListener('click', carregarDados);
-}
-
-// ------------------------------------------------------------
-// Shell (header/sidebar)
-// ------------------------------------------------------------
-async function montarShell(usuario) {
-  const [htmlHeader, htmlSidebar] = await Promise.all([
-    fetch('components/header.html').then((r) => r.text()),
-    fetch('components/sidebar.html').then((r) => r.text()),
-  ]);
-
-  document.getElementById('header-container').innerHTML = htmlHeader;
-  document.getElementById('sidebar-container').innerHTML = htmlSidebar;
-
-  document.getElementById('topo-usuario-nome').textContent = usuario.nome;
-  document.getElementById('topo-usuario-perfil').textContent = usuario.perfil;
-  document.getElementById('topo-titulo-pagina').textContent = 'Financeiro';
-
-  document.getElementById('btn-sair').addEventListener('click', fazerLogout);
-
-  document.querySelectorAll('.sidebar-item[data-perfis]').forEach((item) => {
-    if (!item.dataset.perfis.split(',').includes(usuario.perfil)) item.remove();
-  });
-
-  const itemAtivo = document.querySelector(`.sidebar-item[data-pagina="${NOME_PAGINA}"]`);
-  if (itemAtivo) itemAtivo.classList.add('ativo');
-
-  const sidebar = document.getElementById('sidebar');
-  document.getElementById('btn-menu-mobile').addEventListener('click', () => sidebar.classList.toggle('aberta'));
 }
 
 // ------------------------------------------------------------
@@ -99,10 +71,10 @@ function renderizarMovimentacoes(lista) {
 
   corpo.innerHTML = lista.map((m) => `
     <tr>
-      <td class="tabela-placa">${m.veiculos?.placa ?? '—'}</td>
-      <td>${m.veiculos?.clientes?.nome ?? '—'}</td>
-      <td>${formatarDataHora(m.saida)}</td>
-      <td>${formatarMoeda(m.valor)}</td>
+      <td class="tabela-placa" data-label="Placa">${m.veiculos?.placa ?? '—'}</td>
+      <td data-label="Nome">${m.veiculos?.clientes?.nome ?? '—'}</td>
+      <td data-label="Saída">${formatarDataHora(m.saida)}</td>
+      <td data-label="Valor">${formatarMoeda(m.valor)}</td>
     </tr>
   `).join('');
 }
@@ -122,11 +94,11 @@ function renderizarPagamentos(lista) {
 
   corpo.innerHTML = lista.map((p) => `
     <tr>
-      <td class="tabela-placa">${p.mensalidades?.veiculos?.placa ?? '—'}</td>
-      <td>${p.mensalidades?.clientes?.nome ?? '—'}</td>
-      <td>${formatarDataHora(p.data_pagamento)}</td>
-      <td>${nomesFormaPagamento[p.forma_pagamento] ?? p.forma_pagamento ?? '—'}</td>
-      <td>${formatarMoeda(p.valor)}</td>
+      <td class="tabela-placa" data-label="Placa">${p.mensalidades?.veiculos?.placa ?? '—'}</td>
+      <td data-label="Nome">${p.mensalidades?.clientes?.nome ?? '—'}</td>
+      <td data-label="Data">${formatarDataHora(p.data_pagamento)}</td>
+      <td data-label="Forma">${nomesFormaPagamento[p.forma_pagamento] ?? p.forma_pagamento ?? '—'}</td>
+      <td data-label="Valor">${formatarMoeda(p.valor)}</td>
     </tr>
   `).join('');
 }
