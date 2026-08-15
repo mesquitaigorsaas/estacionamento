@@ -9,6 +9,47 @@ import { fazerLogin } from './auth.js';
 const formLogin = document.getElementById('form-login');
 
 // ------------------------------------------------------------
+// Popup de login no celular
+// No computador o formulário fica visível ao lado da oferta.
+// No celular ele some da página e passa a abrir num popup, pelo
+// botão "Login" do topo direito.
+//
+// A classe .js-modal só é adicionada aqui, com o JavaScript já
+// rodando. Se este arquivo falhar em carregar, o formulário
+// continua aparecendo direto na página e o login segue possível.
+// ------------------------------------------------------------
+const btnAbrirLogin = document.getElementById('btn-abrir-login');
+const btnFecharLogin = document.getElementById('btn-fechar-login');
+const fundoLogin = document.getElementById('login-fundo');
+
+document.body.classList.add('js-modal');
+
+function abrirPopupLogin() {
+  document.body.classList.add('login-aberto');
+  btnAbrirLogin.setAttribute('aria-expanded', 'true');
+  document.getElementById('login-usuario').focus();
+}
+
+function fecharPopupLogin() {
+  document.body.classList.remove('login-aberto');
+  btnAbrirLogin.setAttribute('aria-expanded', 'false');
+  btnAbrirLogin.focus();
+}
+
+btnAbrirLogin.addEventListener('click', abrirPopupLogin);
+btnFecharLogin.addEventListener('click', fecharPopupLogin);
+
+// Clicar no fundo escurecido também fecha
+fundoLogin.addEventListener('click', fecharPopupLogin);
+
+// Tecla Esc fecha
+document.addEventListener('keydown', (evento) => {
+  if (evento.key === 'Escape' && document.body.classList.contains('login-aberto')) {
+    fecharPopupLogin();
+  }
+});
+
+// ------------------------------------------------------------
 // Mostrar/ocultar senha
 // ------------------------------------------------------------
 const btnMostrarSenha = document.getElementById('btn-mostrar-senha');

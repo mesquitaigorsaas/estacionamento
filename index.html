@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Estacionamento — Entrar</title>
+  <title>Achei Vaga — Sistema para Estacionamentos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
@@ -11,8 +11,66 @@
 </head>
 <body>
 
+  <!-- Botão "Login" — aparece só no celular. No computador o
+       formulário já fica visível ao lado, então ele some. -->
+  <button type="button" id="btn-abrir-login" class="btn-login-mobile"
+          aria-expanded="false" aria-controls="caixa-login">Login</button>
+
+  <!-- Fundo escurecido atrás do popup de login (só no celular) -->
+  <div class="login-fundo" id="login-fundo"></div>
+
   <div class="tela-login">
-    <div class="login-caixa">
+   <div class="login-split">
+
+    <!-- ============== OFERTA / ASSINATURA (lado esquerdo) ============== -->
+    <section class="oferta">
+
+      <h1 class="oferta-titulo">Todo o seu estacionamento em uma tela só</h1>
+
+      <p class="oferta-texto">
+        Controle entradas, saídas, mensalistas e caixa em tempo real.
+        Sem planilha, sem papel e sem instalar nada.
+      </p>
+
+      <ul class="oferta-itens">
+        <li>Entrada e saída em segundos, com cálculo automático da tarifa</li>
+        <li>Mensalistas com aviso de vencimento antes de virar calote</li>
+        <li>Relatórios e fechamento de caixa prontos todo dia</li>
+        <li>Funciona no computador, no tablet e no celular</li>
+      </ul>
+
+      <p class="oferta-chamada">Comece hoje. Escolha seu plano:</p>
+
+      <div class="planos">
+
+        <article class="plano">
+          <h2 class="plano-nome">Semestral</h2>
+          <p class="plano-preco"><span class="plano-cifrao">R$</span>19,90<span class="plano-periodo">/mês</span></p>
+          <p class="plano-cobranca">R$ 119,00 cobrados a cada 6 meses</p>
+          <!-- Plano de assinatura do Mercado Pago — R$ 119,00 a cada 6 meses -->
+          <a href="https://mpago.la/2BGHhME" class="btn btn-secundario btn-bloco" target="_blank" rel="noopener">Assinar semestral</a>
+        </article>
+
+        <article class="plano plano-destaque">
+          <span class="plano-selo">Economize 10%</span>
+          <h2 class="plano-nome">Anual</h2>
+          <p class="plano-preco"><span class="plano-cifrao">R$</span>17,90<span class="plano-periodo">/mês</span></p>
+          <p class="plano-cobranca">R$ 214,90 cobrados 1x por ano</p>
+          <!-- Plano de assinatura do Mercado Pago — R$ 214,90 por ano -->
+          <a href="https://mpago.la/2r3cbwr" class="btn btn-primario btn-bloco" target="_blank" rel="noopener">Assinar anual</a>
+        </article>
+
+      </div>
+
+      <p class="oferta-rodape">Cancele quando quiser. Sem taxa de instalação.</p>
+
+    </section>
+
+    <!-- ============== LOGIN (lado direito) ============== -->
+    <div class="login-caixa" id="caixa-login">
+
+      <button type="button" id="btn-fechar-login" class="btn-fechar-login"
+              aria-label="Fechar">&times;</button>
 
       <div class="login-topo">
         <img src="assets/logo/logo.png" alt="Logo do estacionamento" class="logo" />
@@ -44,6 +102,8 @@
       </form>
 
     </div>
+
+   </div>
   </div>
 
   <script type="module" src="js/app.js"></script>

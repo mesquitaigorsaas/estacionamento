@@ -12,13 +12,304 @@
   padding: var(--espaco-4);
 }
 
+/* ------------------------------------------------------------
+   Divisão da tela: oferta à esquerda + login à direita.
+   No celular vira uma coluna só: aparece a oferta, e o login
+   passa a ser um popup aberto pelo botão "Login" do topo.
+   ------------------------------------------------------------ */
+.login-split {
+  width: 100%;
+  max-width: 1120px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espaco-5);
+  align-items: center;
+}
+
+@media (min-width: 940px) {
+  .login-split {
+    grid-template-columns: 1fr 400px;
+    gap: var(--espaco-6);
+  }
+}
+
 .login-caixa {
+  position: relative;
   width: 100%;
   max-width: 400px;
+  margin: 0 auto;
   background: var(--cor-superficie);
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
   padding: var(--espaco-6) var(--espaco-5);
+}
+
+.oferta {
+  color: #fff;
+  max-width: 620px;
+}
+
+/* ------------------------------------------------------------
+   Login como popup no celular
+   ------------------------------------------------------------
+   A classe .js-modal é colocada pelo js/app.js. Sem ela (se o
+   JavaScript falhar), o formulário continua aparecendo normal
+   na página — ninguém fica sem conseguir entrar.
+   ------------------------------------------------------------ */
+.btn-login-mobile,
+.btn-fechar-login,
+.login-fundo {
+  display: none;
+}
+
+@media (max-width: 939px) {
+
+  /* Botão "Login" fixo no topo direito */
+  .btn-login-mobile {
+    display: inline-flex;
+    align-items: center;
+    position: fixed;
+    top: var(--espaco-3);
+    right: var(--espaco-3);
+    z-index: 70;
+    padding: 8px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-login-mobile:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .btn-login-mobile:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  /* Abre espaço no topo para o botão não cobrir o título */
+  .tela-login {
+    padding-top: 68px;
+  }
+
+  /* Com JavaScript ativo, o formulário sai da página e vira popup */
+  body.js-modal .login-caixa {
+    display: none;
+  }
+
+  body.js-modal.login-aberto {
+    overflow: hidden;
+  }
+
+  body.js-modal.login-aberto .login-fundo {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    background: rgba(10, 17, 31, 0.75);
+  }
+
+  body.js-modal.login-aberto .login-caixa {
+    display: block;
+    position: fixed;
+    z-index: 90;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 2 * var(--espaco-3));
+    max-width: 400px;
+    max-height: calc(100vh - 2 * var(--espaco-3));
+    overflow-y: auto;
+    padding: var(--espaco-5) var(--espaco-4);
+    animation: entrada-popup-login 0.18s ease;
+  }
+
+  /* Botão de fechar (o "×" no canto do popup) */
+  body.js-modal.login-aberto .btn-fechar-login {
+    display: block;
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    border: none;
+    background: none;
+    color: var(--cor-texto-suave);
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  body.js-modal.login-aberto .btn-fechar-login:focus-visible {
+    outline: 2px solid var(--cor-acento);
+    outline-offset: 2px;
+    border-radius: var(--raio);
+  }
+}
+
+@keyframes entrada-popup-login {
+  from { opacity: 0; transform: translate(-50%, -46%); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.js-modal.login-aberto .login-caixa {
+    animation: none;
+  }
+}
+
+.oferta-titulo {
+  color: #fff;
+  font-size: clamp(1.5rem, 3.4vw, 2.125rem);
+  line-height: 1.2;
+  margin-bottom: var(--espaco-3);
+}
+
+.oferta-texto {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1rem;
+  max-width: 46ch;
+  margin-bottom: var(--espaco-4);
+}
+
+.oferta-itens {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: var(--espaco-5);
+}
+
+.oferta-itens li {
+  position: relative;
+  padding-left: 28px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9375rem;
+  max-width: 48ch;
+}
+
+.oferta-itens li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cor-acento);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.oferta-chamada {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: #fff;
+  margin-bottom: var(--espaco-3);
+}
+
+.planos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espaco-3);
+}
+
+@media (min-width: 560px) {
+  .planos {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.plano {
+  position: relative;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  padding: var(--espaco-4) var(--espaco-3) var(--espaco-3);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.plano-destaque {
+  background: rgba(42, 157, 143, 0.16);
+  border-color: var(--cor-acento);
+}
+
+.plano-selo {
+  position: absolute;
+  top: -11px;
+  left: var(--espaco-3);
+  background: var(--cor-alerta);
+  color: #4A3708;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.plano-nome {
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.plano-preco {
+  color: #fff;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.plano-cifrao {
+  font-size: 1.125rem;
+  font-weight: 600;
+  vertical-align: super;
+  margin-right: 2px;
+  opacity: 0.8;
+}
+
+.plano-periodo {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+.plano-cobranca {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.8125rem;
+  margin-bottom: var(--espaco-3);
+}
+
+/* Os botões de assinar são links <a>, então precisam do reset de sublinhado */
+.plano .btn {
+  margin-top: auto;
+  text-decoration: none;
+}
+
+.oferta-rodape {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8125rem;
+  margin-top: var(--espaco-3);
 }
 
 .login-topo {
