@@ -5,23 +5,41 @@
 // ============================================================
 
 import { exigirLogin, fazerLogout } from './auth.js';
-import { formatarPlaca, formatarHora } from './utils/formatadores.js';
+import { formatarPlaca, formatarHora, formatarDataHoraCompleta, formatarCnpj } from './utils/formatadores.js';
 import { placaValida, campoPreenchido } from './utils/validacoes.js';
 import { buscarVeiculoPorPlaca, criarClienteEVeiculo } from './services/veiculos.js';
 import { buscarMovimentacaoAberta, abrirMovimentacao } from './services/movimentacoes.js';
+import { imprimirCupom } from './utils/impressao.js';
+import { supabase } from './supabase.js';
 
 const NOME_PAGINA = 'entrada';
 
-let veiculoEncontrado = null; // guarda o veículo já existente, se houver
+let veiculoEncontrado = null;    // guarda o veículo já existente, se houver
+let estacionamentoAtual = null;  // nome, cnpj e contato para o cabeçalho do cupom
+let cupom = null;                // dados da última entrada registrada
 
 async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
 
   await montarShell(usuario);
+  estacionamentoAtual = await carregarEstacionamento(usuario);
 
   document.getElementById('form-busca').addEventListener('submit', aoConsultarPlaca);
   document.getElementById('btn-registrar-entrada').addEventListener('click', () => aoRegistrarEntrada(usuario));
+
+  document.getElementById('btn-imprimir-entrada').addEventListener('click', aoImprimir);
+}
+
+/** Dados do estacionamento, usados no cabeçalho do cupom. */
+async function carregarEstacionamento(usuario) {
+  const { data } = await supabase
+    .from('estacionamentos')
+    .select('nome, cnpj, contato_responsavel')
+    .eq('id', usuario.estacionamento_id)
+    .single();
+
+  return data;
 }
 
 // ------------------------------------------------------------
@@ -151,18 +169,40 @@ async function aoRegistrarEntrada(usuario) {
     return;
   }
 
-  imprimirCupom({ placa, entrada: resultado.movimentacao.entrada, funcionario: usuario.nome });
-  resetarFormulario();
+  cupom = {
+    placa,
+    entrada: formatarDataHoraCompleta(resultado.movimentacao.entrada),
+    horaEntrada: formatarHora(resultado.movimentacao.entrada),
+    funcionario: usuario.nome,
+  };
+
+  mostrarSucesso();
 }
 
 // ------------------------------------------------------------
-// Cupom / impressão
+// Cupom — impresso só se o cliente pedir
 // ------------------------------------------------------------
-function imprimirCupom({ placa, entrada, funcionario }) {
-  document.getElementById('recibo-placa').textContent = placa;
-  document.getElementById('recibo-entrada').textContent = formatarHora(entrada);
-  document.getElementById('recibo-funcionario').textContent = funcionario;
-  window.print();
+function mostrarSucesso() {
+  esconderTudo();
+  document.getElementById('resumo-entrada').textContent =
+    `${cupom.placa} · entrada às ${cupom.horaEntrada}`;
+  document.getElementById('bloco-sucesso').classList.remove('oculto');
+
+  // Já limpa o campo e devolve o cursor para a placa: o atendente
+  // digita a próxima direto, sem precisar clicar em nada. O aviso
+  // e o botão de imprimir continuam na tela até a nova consulta.
+  limparCampos();
+}
+
+function aoImprimir() {
+  imprimirCupom({
+    'recibo-nome-estacionamento': estacionamentoAtual?.nome ?? 'Estacionamento',
+    'recibo-cnpj': estacionamentoAtual?.cnpj ? `CNPJ: ${formatarCnpj(estacionamentoAtual.cnpj)}` : '',
+    'recibo-contato': estacionamentoAtual?.contato_responsavel ?? '',
+    'recibo-placa': cupom.placa,
+    'recibo-entrada': cupom.entrada,
+    'recibo-funcionario': cupom.funcionario,
+  });
 }
 
 // ------------------------------------------------------------
@@ -172,6 +212,7 @@ function esconderTudo() {
   document.getElementById('info-existente').classList.add('oculto');
   document.getElementById('form-cadastro').classList.add('oculto');
   document.getElementById('bloco-confirmacao').classList.add('oculto');
+  document.getElementById('bloco-sucesso').classList.add('oculto');
   esconderAviso();
 }
 
@@ -185,10 +226,10 @@ function esconderAviso() {
   document.getElementById('aviso-placa').classList.add('oculto');
 }
 
-function resetarFormulario() {
+/** Esvazia os campos e devolve o cursor para a placa. */
+function limparCampos() {
   document.getElementById('form-busca').reset();
   document.getElementById('form-cadastro').reset();
-  esconderTudo();
   veiculoEncontrado = null;
   document.getElementById('campo-placa').focus();
 }

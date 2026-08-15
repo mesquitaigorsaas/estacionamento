@@ -117,6 +117,69 @@
   color: var(--cor-texto-suave);
 }
 
+/* ------------------------------------------------------------
+   Bloco de sucesso da entrada/saída, com as opções de cupom
+   ------------------------------------------------------------ */
+.aviso-sucesso {
+  background: rgba(42, 157, 143, 0.12);
+  color: var(--cor-acento-escuro);
+  border-radius: var(--raio);
+  padding: 12px 14px;
+  font-weight: 600;
+  margin-bottom: var(--espaco-2);
+}
+
+.resumo-registro {
+  color: var(--cor-texto);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  margin-bottom: var(--espaco-4);
+}
+
+.acoes-rotulo {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-2);
+}
+
+.acoes-cupom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-2);
+}
+
+.acoes-cupom .btn {
+  flex: 1 1 auto;
+  min-width: 140px;
+}
+
+#bloco-zap,
+#bloco-imagem {
+  margin-top: var(--espaco-4);
+  padding-top: var(--espaco-4);
+  border-top: 1px solid var(--cor-borda);
+}
+
+/* Prévia da imagem do comprovante, antes de enviar */
+.comprovante-previa {
+  display: flex;
+  justify-content: center;
+  background: var(--cor-fundo);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: var(--espaco-3);
+  margin-bottom: var(--espaco-3);
+}
+
+.comprovante-previa canvas {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: var(--sombra);
+}
+
 /* Recibo/cupom — some da tela normal, só aparece ao imprimir */
 .recibo {
   display: none;

@@ -68,6 +68,41 @@
               🟢 Finalizar saída
             </button>
           </div>
+
+          <!-- Aparece depois que a saída é finalizada -->
+          <div id="bloco-sucesso" class="oculto">
+            <div class="aviso-sucesso">✅ Saída finalizada</div>
+            <p class="resumo-registro" id="resumo-saida">—</p>
+
+            <p class="acoes-rotulo">Comprovante para o cliente:</p>
+            <div class="acoes-cupom">
+              <button type="button" id="btn-imagem-saida" class="btn btn-primario">🖼️ Gerar comprovante</button>
+              <button type="button" id="btn-zap-saida" class="btn btn-secundario">💬 Mandar por texto</button>
+              <button type="button" id="btn-imprimir-saida" class="btn btn-secundario">🖨️ Imprimir</button>
+            </div>
+
+            <!-- Imagem do comprovante, revelada pelo botão Gerar -->
+            <div id="bloco-imagem" class="oculto">
+              <div class="comprovante-previa" id="previa-comprovante"></div>
+              <div id="aviso-imagem" class="login-erro oculto"></div>
+              <div class="acoes-cupom">
+                <button type="button" id="btn-compartilhar" class="btn btn-primario">📤 Enviar</button>
+                <button type="button" id="btn-baixar-imagem" class="btn btn-secundario">⬇️ Salvar no aparelho</button>
+              </div>
+            </div>
+
+            <!-- Campo do telefone, revelado pelo botão de texto -->
+            <div id="bloco-zap" class="oculto">
+              <div class="campo">
+                <label for="campo-zap">WhatsApp do cliente (com DDD)</label>
+                <input type="tel" id="campo-zap" placeholder="35999999999" />
+              </div>
+              <div id="aviso-zap" class="login-erro oculto"></div>
+              <button type="button" id="btn-abrir-zap" class="btn btn-primario btn-bloco">
+                Abrir WhatsApp com o comprovante
+              </button>
+            </div>
+          </div>
         </div>
       </main>
     </div>
@@ -77,11 +112,16 @@
   <div class="recibo" id="recibo">
     <div style="text-align:center;">
       <strong id="recibo-nome-estacionamento">Estacionamento</strong>
+      <div id="recibo-cnpj">—</div>
+      <div id="recibo-contato">—</div>
     </div>
+    <hr />
+    <div style="text-align:center;">COMPROVANTE DE PAGAMENTO</div>
     <hr />
     <div class="recibo-linha"><span>Placa:</span><span id="recibo-placa">—</span></div>
     <div class="recibo-linha"><span>Entrada:</span><span id="recibo-entrada">—</span></div>
     <div class="recibo-linha"><span>Saída:</span><span id="recibo-saida">—</span></div>
+    <div class="recibo-linha"><span>Permanência:</span><span id="recibo-tempo">—</span></div>
     <div class="recibo-linha"><span>Valor:</span><span id="recibo-valor">—</span></div>
     <div class="recibo-linha"><span>Funcionário:</span><span id="recibo-funcionario">—</span></div>
     <hr />

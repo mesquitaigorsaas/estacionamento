@@ -39,3 +39,25 @@ export function formatarDuracao(totalMinutos) {
   if (horas === 0) return `${minutos}min`;
   return `${horas}h ${minutos}min`;
 }
+
+/**
+ * Data e hora com o ano incluído — usada nos comprovantes.
+ * Quem leva o papel para reembolso precisa do ano na data.
+ */
+export function formatarDataHoraCompleta(isoString) {
+  if (!isoString) return '—';
+  return new Date(isoString).toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+/** Recebe 14 dígitos e devolve "12.345.678/0001-99". */
+export function formatarCnpj(cnpj) {
+  const numeros = (cnpj || '').replace(/\D/g, '');
+  if (numeros.length !== 14) return cnpj || '—';
+  return numeros.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+}
