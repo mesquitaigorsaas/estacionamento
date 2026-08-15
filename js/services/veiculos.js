@@ -20,11 +20,16 @@ export async function buscarVeiculoPorPlaca(placa) {
   return data;
 }
 
-/** Cria um cliente novo e o veículo vinculado a ele. Retorna o veículo criado (com cliente). */
-export async function criarClienteEVeiculo({ nome, contato, modelo, cor, placa, tipo = 'passagem' }) {
+/**
+ * Cria um cliente novo e o veículo vinculado a ele. Retorna o
+ * veículo criado (com cliente).
+ * estacionamentoId é obrigatório — vem de usuario.estacionamento_id
+ * (usuarioAtual() ou o usuário retornado por exigirLogin).
+ */
+export async function criarClienteEVeiculo({ nome, contato, modelo, cor, placa, tipo = 'passagem', estacionamentoId }) {
   const { data: cliente, error: erroCliente } = await supabase
     .from('clientes')
-    .insert({ nome, contato, tipo })
+    .insert({ nome, contato, tipo, estacionamento_id: estacionamentoId })
     .select()
     .single();
 
@@ -34,7 +39,7 @@ export async function criarClienteEVeiculo({ nome, contato, modelo, cor, placa, 
 
   const { data: veiculo, error: erroVeiculo } = await supabase
     .from('veiculos')
-    .insert({ placa, modelo, cor, cliente_id: cliente.id })
+    .insert({ placa, modelo, cor, cliente_id: cliente.id, estacionamento_id: estacionamentoId })
     .select('*, clientes(*)')
     .single();
 
@@ -45,6 +50,7 @@ export async function criarClienteEVeiculo({ nome, contato, modelo, cor, placa, 
 
   return { veiculo };
 }
+
 /** Atualiza os dados do cliente e do veículo (usado na tela Clientes/veículos). */
 export async function atualizarClienteEVeiculo({ clienteId, veiculoId, nome, contato, tipo, modelo, cor }) {
   const { error: erroCliente } = await supabase

@@ -53,8 +53,11 @@ export async function buscarMovimentacaoAbertaPorPlaca(placa) {
   return data;
 }
 
-/** Registra a entrada de um veículo. */
-export async function abrirMovimentacao({ veiculoId, funcionarioId, tipo, tarifaId }) {
+/**
+ * Registra a entrada de um veículo.
+ * estacionamentoId é obrigatório — vem de usuario.estacionamento_id.
+ */
+export async function abrirMovimentacao({ veiculoId, funcionarioId, tipo, tarifaId, estacionamentoId }) {
   const { data, error } = await supabase
     .from('movimentacoes')
     .insert({
@@ -63,6 +66,7 @@ export async function abrirMovimentacao({ veiculoId, funcionarioId, tipo, tarifa
       tipo,
       tarifa_id: tarifaId,
       status: 'aberta',
+      estacionamento_id: estacionamentoId,
     })
     .select()
     .single();
@@ -94,6 +98,7 @@ export async function fecharMovimentacao({ id, funcionarioId, valor }) {
   }
   return { movimentacao: data };
 }
+
 /** Lista movimentações finalizadas (com valor cobrado) dentro de um período. */
 export async function listarMovimentacoesFinalizadas({ dataInicio, dataFim }) {
   let consulta = supabase

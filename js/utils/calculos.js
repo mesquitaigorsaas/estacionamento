@@ -10,29 +10,28 @@ export function minutosEntre(inicio, fim) {
   return Math.max(0, Math.round((dtFim - dtInicio) / 60000));
 }
 
-// Regra padrão: R$2,50 a cada bloco de 30 minutos, sem tolerância
-// (do minuto 1 já cobra o 1º bloco) e sem fracionar — 31 minutos
-// paga o mesmo que 60 minutos (2 blocos).
+// Usado só se, por algum motivo, o estacionamento não tiver
+// esses valores preenchidos (nunca deveria acontecer — é
+// preenchido automaticamente na criação do estacionamento —
+// mas evita quebrar ou cobrar "grátis" se faltar dado).
 const MINUTOS_POR_BLOCO_PADRAO = 30;
 const VALOR_POR_BLOCO_PADRAO = 2.5;
 
 /**
  * Calcula o valor a cobrar.
  * Regra: cobrança por blocos fechados (arredondando sempre pra
- * cima), sem tolerância. Ex.: bloco de 30min a R$2,50 → 30min
- * paga R$2,50, 31min já paga R$5,00.
- *
- * Se a tarifa do veículo tiver `valor_bloco` e `minutos_bloco`
- * cadastrados (tabela `tarifas` no Supabase), usa esses valores
- * no lugar do padrão — permite ter tarifas diferentes por tipo
- * de veículo/plano no futuro sem mexer nesse arquivo.
+ * cima), sem tolerância — 31 minutos paga o mesmo que 60 (2
+ * blocos). Os valores (minutos por bloco, valor por bloco) vêm
+ * do PRÓPRIO estacionamento (tabela `estacionamentos`, colunas
+ * `minutos_bloco`/`valor_bloco`) — não são mais fixos no código,
+ * porque cada estacionamento define o próprio preço.
  */
-export function calcularValor(entrada, saida, tarifa) {
+export function calcularValor(entrada, saida, estacionamento) {
   const minutos = minutosEntre(entrada, saida);
   if (minutos <= 0) return 0;
 
-  const minutosPorBloco = Number(tarifa?.minutos_bloco) || MINUTOS_POR_BLOCO_PADRAO;
-  const valorPorBloco = Number(tarifa?.valor_bloco) || VALOR_POR_BLOCO_PADRAO;
+  const minutosPorBloco = Number(estacionamento?.minutos_bloco) || MINUTOS_POR_BLOCO_PADRAO;
+  const valorPorBloco = Number(estacionamento?.valor_bloco) || VALOR_POR_BLOCO_PADRAO;
 
   const blocos = Math.ceil(minutos / minutosPorBloco);
   return Number((blocos * valorPorBloco).toFixed(2));

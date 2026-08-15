@@ -4,7 +4,7 @@
 // Busca placa → calcula valor → finaliza → imprime recibo.
 // ============================================================
 
-import { exigirLogin, fazerLogout } from './auth.js';
+import { exigirLogin, fazerLogout, usuarioAtual } from './auth.js';
 import { formatarPlaca, formatarHora, formatarDuracao, formatarMoeda } from './utils/formatadores.js';
 import { placaValida } from './utils/validacoes.js';
 import { minutosEntre, calcularValor } from './utils/calculos.js';
@@ -81,13 +81,17 @@ async function aoConsultarPlaca(evento) {
   const veiculo = movimentacao.veiculos;
   const agora = new Date().toISOString();
 
-  const { data: tarifa } = await supabase
-    .from('tarifas')
-    .select('*')
-    .eq('id', movimentacao.tarifa_id)
+  // Pega o valor por bloco / minutos por bloco do PRÓPRIO
+  // estacionamento (cada um tem o seu, cadastrado em
+  // estacionamentos.valor_bloco / minutos_bloco).
+  const usuario = usuarioAtual();
+  const { data: estacionamento } = await supabase
+    .from('estacionamentos')
+    .select('valor_bloco, minutos_bloco')
+    .eq('id', usuario.estacionamento_id)
     .single();
 
-  valorCalculado = calcularValor(movimentacao.entrada, agora, tarifa);
+  valorCalculado = calcularValor(movimentacao.entrada, agora, estacionamento);
   const minutos = minutosEntre(movimentacao.entrada, agora);
 
   document.getElementById('info-nome').textContent = veiculo.clientes?.nome ?? '—';

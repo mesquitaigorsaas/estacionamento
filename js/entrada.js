@@ -8,23 +8,17 @@ import { exigirLogin, fazerLogout } from './auth.js';
 import { formatarPlaca, formatarHora } from './utils/formatadores.js';
 import { placaValida, campoPreenchido } from './utils/validacoes.js';
 import { buscarVeiculoPorPlaca, criarClienteEVeiculo } from './services/veiculos.js';
-import { buscarMovimentacaoAberta, abrirMovimentacao, buscarTarifaPadrao } from './services/movimentacoes.js';
+import { buscarMovimentacaoAberta, abrirMovimentacao } from './services/movimentacoes.js';
 
 const NOME_PAGINA = 'entrada';
 
 let veiculoEncontrado = null; // guarda o veículo já existente, se houver
-let tarifaPadrao = null;
 
 async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
 
   await montarShell(usuario);
-  tarifaPadrao = await buscarTarifaPadrao();
-
-  if (!tarifaPadrao) {
-    mostrarAviso('Nenhuma tarifa ativa cadastrada. Cadastre uma tarifa em Configurações antes de registrar entradas.');
-  }
 
   document.getElementById('form-busca').addEventListener('submit', aoConsultarPlaca);
   document.getElementById('btn-registrar-entrada').addEventListener('click', () => aoRegistrarEntrada(usuario));
@@ -105,11 +99,6 @@ async function aoConsultarPlaca(evento) {
 async function aoRegistrarEntrada(usuario) {
   esconderAviso();
 
-  if (!tarifaPadrao) {
-    mostrarAviso('Não é possível registrar sem uma tarifa ativa cadastrada.');
-    return;
-  }
-
   const placa = formatarPlaca(document.getElementById('campo-placa').value);
   let veiculo = veiculoEncontrado;
 
@@ -127,6 +116,7 @@ async function aoRegistrarEntrada(usuario) {
       modelo: document.getElementById('novo-modelo').value.trim(),
       cor: document.getElementById('novo-cor').value.trim(),
       placa,
+      estacionamentoId: usuario.estacionamento_id,
     });
 
     if (resultado.erro) {
@@ -142,11 +132,15 @@ async function aoRegistrarEntrada(usuario) {
 
   const tipo = veiculo.clientes?.tipo === 'mensalista' ? 'mensalista' : 'passagem';
 
+  // O valor cobrado na saída vem do próprio estacionamento
+  // (estacionamentos.valor_bloco/minutos_bloco), não depende
+  // mais de existir uma linha na tabela "tarifas".
   const resultado = await abrirMovimentacao({
     veiculoId: veiculo.id,
     funcionarioId: usuario.id,
     tipo,
-    tarifaId: tarifaPadrao.id,
+    tarifaId: null,
+    estacionamentoId: usuario.estacionamento_id,
   });
 
   btn.disabled = false;
