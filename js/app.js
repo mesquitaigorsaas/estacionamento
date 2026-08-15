@@ -1,29 +1,12 @@
 // ============================================================
 // js/app.js
-// Script da index.html: alterna abas, cuida do login e do
-// cadastro público de cliente.
+// Script da index.html: login de funcionário.
 // ============================================================
 
 import { supabase } from './supabase.js';
 import { fazerLogin } from './auth.js';
 
-// ------------------------------------------------------------
-// Alternar entre as abas "Sou funcionário" / "Cadastrar cliente"
-// ------------------------------------------------------------
-const abas = document.querySelectorAll('.login-aba');
 const formLogin = document.getElementById('form-login');
-const formCadastro = document.getElementById('form-cadastro-cliente');
-
-abas.forEach((aba) => {
-  aba.addEventListener('click', () => {
-    abas.forEach((a) => a.classList.remove('ativa'));
-    aba.classList.add('ativa');
-
-    const alvo = aba.dataset.aba;
-    formLogin.classList.toggle('oculto', alvo !== 'funcionario');
-    formCadastro.classList.toggle('oculto', alvo !== 'cliente');
-  });
-});
 
 // ------------------------------------------------------------
 // Mostrar/ocultar senha
@@ -86,51 +69,4 @@ document.getElementById('link-esqueci-senha').addEventListener('click', async (e
   divErroLogin.textContent = error
     ? 'Não foi possível enviar a recuperação. Contate o administrador.'
     : 'Se o usuário existir, um e-mail de recuperação foi enviado.';
-});
-
-// ------------------------------------------------------------
-// Cadastro público de cliente (sem login — visitante na tela inicial)
-// ------------------------------------------------------------
-const divErroCadastro = document.getElementById('cadastro-erro');
-const divSucessoCadastro = document.getElementById('cadastro-sucesso');
-
-formCadastro.addEventListener('submit', async (evento) => {
-  evento.preventDefault();
-  divErroCadastro.classList.add('oculto');
-  divSucessoCadastro.classList.add('oculto');
-
-  const nome = document.getElementById('cliente-nome').value.trim();
-  const contato = document.getElementById('cliente-contato').value.trim();
-  const placa = document.getElementById('cliente-placa').value.trim().toUpperCase();
-  const modelo = document.getElementById('cliente-modelo').value.trim();
-
-  // 1) cria o cliente
-  const { data: cliente, error: erroCliente } = await supabase
-    .from('clientes')
-    .insert({ nome, contato, tipo: 'passagem' })
-    .select()
-    .single();
-
-  if (erroCliente) {
-    divErroCadastro.textContent = 'Não foi possível cadastrar. Tente novamente.';
-    divErroCadastro.classList.remove('oculto');
-    return;
-  }
-
-  // 2) vincula o veículo ao cliente recém-criado
-  const { error: erroVeiculo } = await supabase
-    .from('veiculos')
-    .insert({ placa, modelo, cliente_id: cliente.id });
-
-  if (erroVeiculo) {
-    divErroCadastro.textContent = erroVeiculo.message.includes('duplicate')
-      ? 'Essa placa já está cadastrada.'
-      : 'Cliente criado, mas houve erro ao salvar o veículo.';
-    divErroCadastro.classList.remove('oculto');
-    return;
-  }
-
-  divSucessoCadastro.textContent = 'Cadastro realizado com sucesso!';
-  divSucessoCadastro.classList.remove('oculto');
-  formCadastro.reset();
 });
