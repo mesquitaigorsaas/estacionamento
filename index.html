@@ -19,14 +19,8 @@
         <p>Acesse sua conta para continuar</p>
       </div>
 
-      <!-- Abas -->
-      <div class="login-abas">
-        <button type="button" class="login-aba ativa" data-aba="funcionario">Sou funcionário</button>
-        <button type="button" class="login-aba" data-aba="cliente">Cadastro mensalista</button>
-      </div>
-
-      <!-- ============== ABA: LOGIN DE FUNCIONÁRIO ============== -->
-      <form id="form-login" class="painel-aba">
+      <!-- ============== LOGIN DE FUNCIONÁRIO ============== -->
+      <form id="form-login">
         <div id="login-erro" class="login-erro oculto"></div>
 
         <div class="campo">
@@ -47,34 +41,6 @@
         </div>
 
         <button type="submit" id="btn-entrar" class="btn btn-primario btn-bloco">Entrar</button>
-      </form>
-
-      <!-- ============== ABA: CADASTRO DE CLIENTE ============== -->
-      <form id="form-cadastro-cliente" class="painel-aba oculto">
-        <div id="cadastro-erro" class="login-erro oculto"></div>
-        <div id="cadastro-sucesso" class="login-erro oculto" style="background:rgba(42,157,143,0.12); color:var(--cor-acento-escuro);"></div>
-
-        <div class="campo">
-          <label for="cliente-nome">Nome completo</label>
-          <input type="text" id="cliente-nome" required />
-        </div>
-
-        <div class="campo">
-          <label for="cliente-contato">Telefone / WhatsApp</label>
-          <input type="tel" id="cliente-contato" required />
-        </div>
-
-        <div class="campo">
-          <label for="cliente-placa">Placa do veículo</label>
-          <input type="text" id="cliente-placa" maxlength="8" style="text-transform:uppercase" required />
-        </div>
-
-        <div class="campo">
-          <label for="cliente-modelo">Modelo do veículo</label>
-          <input type="text" id="cliente-modelo" />
-        </div>
-
-        <button type="submit" class="btn btn-primario btn-bloco">Cadastrar</button>
       </form>
 
     </div>
