@@ -74,6 +74,41 @@ img {
 }
 
 /* ------------------------------------------------------------
+   Campos de formulário (label + input/select)
+   Global — usado em toda página com formulários (login, entrada,
+   saída, mensalistas, usuários, filtros, etc.)
+   ------------------------------------------------------------ */
+.campo {
+  margin-bottom: var(--espaco-3);
+}
+
+.campo label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--cor-texto);
+  margin-bottom: 6px;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  background: var(--cor-superficie);
+}
+
+.campo input:focus,
+.campo select:focus {
+  outline: 2px solid var(--cor-acento);
+  outline-offset: 1px;
+  border-color: var(--cor-acento);
+}
+
+/* ------------------------------------------------------------
    Título da página
    O <h1> é o único título exibido (o <h2> do header fica sempre
    oculto via css/dashboard.css, em qualquer largura de tela).
