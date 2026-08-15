@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usuários — Estacionamento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/tables.css" />
+  <link rel="stylesheet" href="css/modal.css" />
+</head>
+<body>
+
+  <div class="shell">
+    <div id="sidebar-container"></div>
+
+    <div>
+      <div id="header-container"></div>
+
+      <main class="conteudo">
+        <div class="pagina-titulo">
+          <h1>Usuários</h1>
+          <p>Cadastre e gerencie quem tem acesso ao sistema</p>
+        </div>
+
+        <!-- ============== NOVO USUÁRIO ============== -->
+        <div class="cartao" style="margin-bottom: var(--espaco-4);">
+          <h3 style="margin-bottom: var(--espaco-3);">Novo usuário</h3>
+
+          <form id="form-novo-usuario" class="grade-form-3col">
+            <div class="campo">
+              <label for="novo-usuario-nome">Nome completo</label>
+              <input type="text" id="novo-usuario-nome" required />
+            </div>
+            <div class="campo">
+              <label for="novo-usuario-login">Login (e-mail)</label>
+              <input type="email" id="novo-usuario-login" required />
+            </div>
+            <div class="campo">
+              <label for="novo-usuario-senha">Senha temporária</label>
+              <input type="text" id="novo-usuario-senha" minlength="6" required />
+            </div>
+            <div class="campo">
+              <label for="novo-usuario-perfil">Perfil</label>
+              <select id="novo-usuario-perfil" required>
+                <option value="">Selecione...</option>
+                <option value="operador">Operador</option>
+                <option value="gerente">Gerente</option>
+                <option value="administrador">Administrador</option>
+              </select>
+            </div>
+          </form>
+
+          <div id="aviso" class="login-erro oculto" style="margin-top: var(--espaco-3);"></div>
+
+          <button type="submit" form="form-novo-usuario" id="btn-cadastrar-usuario" class="btn btn-primario" style="margin-top: var(--espaco-3);">Cadastrar usuário</button>
+        </div>
+
+        <!-- ============== LISTA DE USUÁRIOS ============== -->
+        <div class="cartao">
+          <h3 style="margin-bottom: var(--espaco-3);">Usuários cadastrados</h3>
+          <div class="tabela-wrapper">
+            <table class="tabela">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Login</th>
+                  <th>Perfil</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-corpo"></tbody>
+            </table>
+            <div id="mensagem-vazio" class="mensagem-vazio oculto">Nenhum usuário cadastrado.</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="modal-container"></div>
+
+  <script type="module" src="js/usuarios.js"></script>
+</body>
+</html>
