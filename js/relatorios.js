@@ -9,6 +9,7 @@ import { montarShell } from './utils/layout.js';
 import { formatarMoeda } from './utils/formatadores.js';
 import { listarMovimentacoesFinalizadas } from './services/movimentacoes.js';
 import { listarPagamentos } from './services/pagamentos.js';
+import { dataLocal } from './utils/datas.js';
 
 const NOME_PAGINA = 'relatorios';
 let grafico = null;
@@ -59,17 +60,20 @@ function montarFaturamentoPorDia(movimentacoes, pagamentos, dataInicio, dataFim)
   let cursor = new Date(`${dataInicio}T00:00:00`);
   const fim = new Date(`${dataFim}T00:00:00`);
   while (cursor <= fim) {
-    porDia[cursor.toISOString().slice(0, 10)] = 0;
+    porDia[dataLocal(cursor)] = 0;
     cursor.setDate(cursor.getDate() + 1);
   }
 
+  // O banco devolve o horário em UTC. Cortar os 10 primeiros
+  // caracteres jogaria o faturamento depois das 21h na barra do
+  // dia seguinte — por isso a conversão para o dia local.
   movimentacoes.forEach((m) => {
-    const dia = m.saida.slice(0, 10);
+    const dia = dataLocal(new Date(m.saida));
     porDia[dia] = (porDia[dia] || 0) + (Number(m.valor) || 0);
   });
 
   pagamentos.forEach((p) => {
-    const dia = p.data_pagamento.slice(0, 10);
+    const dia = dataLocal(new Date(p.data_pagamento));
     porDia[dia] = (porDia[dia] || 0) + (Number(p.valor) || 0);
   });
 

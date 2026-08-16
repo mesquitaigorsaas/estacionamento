@@ -5,13 +5,18 @@
 
 import { supabase } from '../supabase.js';
 import { renovarMensalidade } from './mensalidades.js';
-import { inicioDoDia, fimDoDia, dataLocal } from '../utils/datas.js';
+import { inicioDoDia, fimDoDia, somarMeses, diaDoMes } from '../utils/datas.js';
 
 /**
  * Registra o pagamento e empurra o vencimento em +1 mês.
- * vencimentoAtual precisa vir no formato 'AAAA-MM-DD'.
+ * vencimentoAtual e dataInicio precisam vir como 'AAAA-MM-DD'.
+ *
+ * dataInicio é o dia em que a mensalidade começou, e serve de
+ * âncora: quem assinou dia 31 continua vencendo dia 31, mesmo
+ * depois de passar por fevereiro. Sem ela, o vencimento desce
+ * para 28 e nunca mais sobe.
  */
-export async function registrarPagamento({ mensalidadeId, usuarioId, valor, formaPagamento, vencimentoAtual }) {
+export async function registrarPagamento({ mensalidadeId, usuarioId, valor, formaPagamento, vencimentoAtual, dataInicio }) {
   const { error: erroPagamento } = await supabase.from('pagamentos').insert({
     mensalidade_id: mensalidadeId,
     usuario_id: usuarioId,
@@ -23,11 +28,7 @@ export async function registrarPagamento({ mensalidadeId, usuarioId, valor, form
     return { erro: 'Não foi possível registrar o pagamento.' };
   }
 
-  const proximoVencimento = new Date(`${vencimentoAtual}T00:00:00`);
-  proximoVencimento.setMonth(proximoVencimento.getMonth() + 1);
-  // dataLocal em vez de toISOString: o toISOString converte para
-  // UTC e pode devolver o dia anterior dependendo do fuso.
-  const novaData = dataLocal(proximoVencimento);
+  const novaData = somarMeses(vencimentoAtual, 1, diaDoMes(dataInicio ?? vencimentoAtual));
 
   const resultado = await renovarMensalidade(mensalidadeId, novaData);
   if (resultado.erro) return { erro: resultado.erro };

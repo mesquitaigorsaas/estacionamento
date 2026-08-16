@@ -18,6 +18,7 @@ import {
   atualizarMensalidade,
 } from './services/mensalidades.js';
 import { registrarPagamento } from './services/pagamentos.js';
+import { dataDeHoje, somarMeses } from './utils/datas.js';
 
 const NOME_PAGINA = 'mensalistas';
 let veiculoEncontrado = null;
@@ -66,13 +67,11 @@ async function aoConsultarPlaca(evento) {
     campo.classList.toggle('oculto', Boolean(veiculoEncontrado));
   });
 
-  const hoje = new Date();
-  dataInicioAuto = hoje.toISOString().slice(0, 10);
-  const vencimento = new Date(hoje);
-  vencimento.setMonth(vencimento.getMonth() + 1);
-  vencimentoAuto = vencimento.toISOString().slice(0, 10);
+  dataInicioAuto = dataDeHoje();
+  vencimentoAuto = somarMeses(dataInicioAuto, 1);
 
-  document.getElementById('texto-vencimento').textContent = vencimento.toLocaleDateString('pt-BR');
+  document.getElementById('texto-vencimento').textContent =
+    new Date(`${vencimentoAuto}T00:00:00`).toLocaleDateString('pt-BR');
   document.getElementById('bloco-mensalidade').classList.remove('oculto');
 }
 
@@ -300,6 +299,7 @@ function abrirModalPagamento(mensalidade, usuario) {
       valor: Number(document.getElementById('pag-valor').value),
       formaPagamento: document.getElementById('pag-forma').value,
       vencimentoAtual: mensalidade.vencimento,
+      dataInicio: mensalidade.data_inicio,
     });
 
     if (resultado.erro) {
