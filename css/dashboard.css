@@ -126,9 +126,13 @@
   margin-bottom: var(--espaco-4);
 }
 
-/* Os indicadores são links: levam para a tela já filtrada. */
+/* Os indicadores são links: levam para a tela já filtrada.
+   Coluna flex para o "Ver →" ficar colado na base — assim os
+   links se alinham entre si mesmo quando um rótulo ocupa duas
+   linhas e outro só uma. */
 .indicador {
-  display: block;
+  display: flex;
+  flex-direction: column;
   background: var(--cor-superficie);
   border: 1px solid var(--cor-borda);
   border-radius: var(--raio);
@@ -153,10 +157,12 @@
 }
 
 .indicador-link {
-  margin-top: var(--espaco-2);
+  margin-top: auto;
+  padding-top: var(--espaco-3);
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--cor-acento);
+  white-space: nowrap;
 }
 
 @media (prefers-reduced-motion: reduce) {
