@@ -21,35 +21,44 @@
         <h1>Visão geral</h1>
         <p class="texto-suave" style="margin-bottom: var(--espaco-4);">Resumo da operação de hoje</p>
 
+        <!-- Cada cartão leva para a tela correspondente, já filtrada.
+             O "hoje" no endereço é resolvido por js/utils/parametros.js. -->
         <div class="grade-indicadores">
-          <div class="indicador">
+          <a class="indicador" href="historico.html?status=aberta">
             <div class="indicador-rotulo">Veículos estacionados</div>
             <div class="indicador-valor" id="ind-estacionados">—</div>
-          </div>
-          <div class="indicador">
+            <div class="indicador-link">Ver quem está no pátio →</div>
+          </a>
+          <a class="indicador" href="historico.html?campo=entrada&amp;de=hoje&amp;ate=hoje">
             <div class="indicador-rotulo">Entradas hoje</div>
             <div class="indicador-valor" id="ind-entradas-hoje">—</div>
-          </div>
-          <div class="indicador">
+            <div class="indicador-link">Ver as entradas →</div>
+          </a>
+          <a class="indicador" href="historico.html?status=finalizada&amp;campo=saida&amp;de=hoje&amp;ate=hoje">
             <div class="indicador-rotulo">Saídas hoje</div>
             <div class="indicador-valor" id="ind-saidas-hoje">—</div>
-          </div>
-          <div class="indicador indicador-sucesso">
+            <div class="indicador-link">Ver as saídas →</div>
+          </a>
+          <a class="indicador indicador-sucesso" href="financeiro.html?de=hoje&amp;ate=hoje">
             <div class="indicador-rotulo">Faturamento hoje</div>
             <div class="indicador-valor" id="ind-faturamento-hoje">—</div>
-          </div>
-          <div class="indicador">
+            <div class="indicador-link">Abrir o financeiro →</div>
+          </a>
+          <a class="indicador" href="mensalistas.html">
             <div class="indicador-rotulo">Mensalistas ativos</div>
             <div class="indicador-valor" id="ind-mensalistas-ativos">—</div>
-          </div>
-          <div class="indicador indicador-alerta">
+            <div class="indicador-link">Ver mensalistas →</div>
+          </a>
+          <a class="indicador indicador-alerta" href="vencimentos.html">
             <div class="indicador-rotulo">Vencem em 3 dias</div>
             <div class="indicador-valor" id="ind-vencem-em-breve">—</div>
-          </div>
-          <div class="indicador indicador-perigo">
+            <div class="indicador-link">Ver vencimentos →</div>
+          </a>
+          <a class="indicador indicador-perigo" href="vencimentos.html">
             <div class="indicador-rotulo">Mensalidades vencidas</div>
             <div class="indicador-valor" id="ind-vencidas">—</div>
-          </div>
+            <div class="indicador-link">Ver vencimentos →</div>
+          </a>
         </div>
       </main>
     </div>

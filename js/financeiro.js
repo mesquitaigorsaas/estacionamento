@@ -9,6 +9,7 @@ import { montarShell } from './utils/layout.js';
 import { formatarDataHora, formatarMoeda } from './utils/formatadores.js';
 import { listarMovimentacoesFinalizadas } from './services/movimentacoes.js';
 import { listarPagamentos } from './services/pagamentos.js';
+import { parametro, resolverData } from './utils/parametros.js';
 
 const NOME_PAGINA = 'financeiro';
 
@@ -24,9 +25,19 @@ async function iniciar() {
 }
 
 // ------------------------------------------------------------
-// Período padrão: do dia 1 do mês atual até hoje
+// Período: o que vier no endereço (vindo do dashboard) ou,
+// na falta dele, do dia 1 do mês atual até hoje.
 // ------------------------------------------------------------
 function definirPeriodoPadrao() {
+  const de = resolverData(parametro('de'));
+  const ate = resolverData(parametro('ate'));
+
+  if (de || ate) {
+    if (de) document.getElementById('filtro-inicio').value = de;
+    if (ate) document.getElementById('filtro-fim').value = ate;
+    return;
+  }
+
   const hoje = new Date();
   const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
   document.getElementById('filtro-inicio').valueAsDate = inicioMes;

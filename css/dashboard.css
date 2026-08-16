@@ -126,11 +126,43 @@
   margin-bottom: var(--espaco-4);
 }
 
+/* Os indicadores são links: levam para a tela já filtrada. */
 .indicador {
+  display: block;
   background: var(--cor-superficie);
   border: 1px solid var(--cor-borda);
   border-radius: var(--raio);
   padding: var(--espaco-4);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+}
+
+.indicador:hover {
+  border-color: var(--cor-acento);
+  box-shadow: var(--sombra);
+}
+
+.indicador:active {
+  transform: translateY(1px);
+}
+
+.indicador:focus-visible {
+  outline: 2px solid var(--cor-acento);
+  outline-offset: 2px;
+}
+
+.indicador-link {
+  margin-top: var(--espaco-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--cor-acento);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indicador {
+    transition: none;
+  }
 }
 
 .indicador-rotulo {

@@ -5,41 +5,23 @@
 // ============================================================
 
 import { exigirLogin, fazerLogout } from './auth.js';
-import { formatarPlaca, formatarHora, formatarDataHoraCompleta, formatarCnpj } from './utils/formatadores.js';
+import { formatarPlaca, formatarHora } from './utils/formatadores.js';
 import { placaValida, campoPreenchido } from './utils/validacoes.js';
 import { buscarVeiculoPorPlaca, criarClienteEVeiculo } from './services/veiculos.js';
 import { buscarMovimentacaoAberta, abrirMovimentacao } from './services/movimentacoes.js';
-import { imprimirCupom } from './utils/impressao.js';
-import { supabase } from './supabase.js';
 
 const NOME_PAGINA = 'entrada';
 
-let veiculoEncontrado = null;    // guarda o veículo já existente, se houver
-let estacionamentoAtual = null;  // nome, cnpj e contato para o cabeçalho do cupom
-let cupom = null;                // dados da última entrada registrada
+let veiculoEncontrado = null; // guarda o veículo já existente, se houver
 
 async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
 
   await montarShell(usuario);
-  estacionamentoAtual = await carregarEstacionamento(usuario);
 
   document.getElementById('form-busca').addEventListener('submit', aoConsultarPlaca);
   document.getElementById('btn-registrar-entrada').addEventListener('click', () => aoRegistrarEntrada(usuario));
-
-  document.getElementById('btn-imprimir-entrada').addEventListener('click', aoImprimir);
-}
-
-/** Dados do estacionamento, usados no cabeçalho do cupom. */
-async function carregarEstacionamento(usuario) {
-  const { data } = await supabase
-    .from('estacionamentos')
-    .select('nome, cnpj, contato_responsavel')
-    .eq('id', usuario.estacionamento_id)
-    .single();
-
-  return data;
 }
 
 // ------------------------------------------------------------
@@ -169,40 +151,24 @@ async function aoRegistrarEntrada(usuario) {
     return;
   }
 
-  cupom = {
-    placa,
-    entrada: formatarDataHoraCompleta(resultado.movimentacao.entrada),
-    horaEntrada: formatarHora(resultado.movimentacao.entrada),
-    funcionario: usuario.nome,
-  };
-
-  mostrarSucesso();
+  mostrarSucesso(placa, resultado.movimentacao.entrada);
 }
 
 // ------------------------------------------------------------
-// Cupom — impresso só se o cliente pedir
+// Confirmação na tela
+// A entrada não gera cupom: o sistema encontra o carro pela
+// placa na saída, então o papel não serve para nada aqui.
 // ------------------------------------------------------------
-function mostrarSucesso() {
+function mostrarSucesso(placa, entrada) {
   esconderTudo();
   document.getElementById('resumo-entrada').textContent =
-    `${cupom.placa} · entrada às ${cupom.horaEntrada}`;
+    `${placa} · entrada às ${formatarHora(entrada)}`;
   document.getElementById('bloco-sucesso').classList.remove('oculto');
 
   // Já limpa o campo e devolve o cursor para a placa: o atendente
-  // digita a próxima direto, sem precisar clicar em nada. O aviso
-  // e o botão de imprimir continuam na tela até a nova consulta.
+  // digita a próxima direto. A confirmação continua na tela até
+  // a nova consulta.
   limparCampos();
-}
-
-function aoImprimir() {
-  imprimirCupom({
-    'recibo-nome-estacionamento': estacionamentoAtual?.nome ?? 'Estacionamento',
-    'recibo-cnpj': estacionamentoAtual?.cnpj ? `CNPJ: ${formatarCnpj(estacionamentoAtual.cnpj)}` : '',
-    'recibo-contato': estacionamentoAtual?.contato_responsavel ?? '',
-    'recibo-placa': cupom.placa,
-    'recibo-entrada': cupom.entrada,
-    'recibo-funcionario': cupom.funcionario,
-  });
 }
 
 // ------------------------------------------------------------

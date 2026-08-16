@@ -9,6 +9,7 @@ import { exigirLogin } from './auth.js';
 import { montarShell } from './utils/layout.js';
 import { formatarDataHora, formatarDuracao, formatarMoeda } from './utils/formatadores.js';
 import { minutosEntre } from './utils/calculos.js';
+import { parametro, resolverData } from './utils/parametros.js';
 
 const NOME_PAGINA = 'historico';
 
@@ -17,9 +18,29 @@ async function iniciar() {
   if (!usuario) return;
 
   await montarShell(usuario, NOME_PAGINA, 'Histórico');
+  aplicarFiltrosDaUrl();
   await carregarHistorico();
 
   document.getElementById('btn-filtrar').addEventListener('click', carregarHistorico);
+}
+
+/**
+ * Preenche os filtros com o que veio no endereço.
+ * É assim que os cartões do dashboard abrem esta tela já
+ * filtrada — o usuário vê os filtros preenchidos e pode mexer.
+ */
+function aplicarFiltrosDaUrl() {
+  const status = parametro('status');
+  const campo = parametro('campo');
+  const de = resolverData(parametro('de'));
+  const ate = resolverData(parametro('ate'));
+  const placa = parametro('placa');
+
+  if (status) document.getElementById('filtro-status').value = status;
+  if (campo) document.getElementById('filtro-campo-data').value = campo;
+  if (de) document.getElementById('filtro-data-inicio').value = de;
+  if (ate) document.getElementById('filtro-data-fim').value = ate;
+  if (placa) document.getElementById('filtro-placa').value = placa;
 }
 
 // ------------------------------------------------------------
@@ -37,9 +58,14 @@ async function carregarHistorico() {
   const dataInicio = document.getElementById('filtro-data-inicio').value;
   const dataFim = document.getElementById('filtro-data-fim').value;
 
+  // A data pode filtrar pela entrada ou pela saída. Faz diferença
+  // real: um carro que entrou ontem e saiu hoje é "saída de hoje",
+  // mas não é "entrada de hoje".
+  const campoData = document.getElementById('filtro-campo-data').value;
+
   if (status) consulta = consulta.eq('status', status);
-  if (dataInicio) consulta = consulta.gte('entrada', `${dataInicio}T00:00:00`);
-  if (dataFim) consulta = consulta.lte('entrada', `${dataFim}T23:59:59`);
+  if (dataInicio) consulta = consulta.gte(campoData, `${dataInicio}T00:00:00`);
+  if (dataFim) consulta = consulta.lte(campoData, `${dataFim}T23:59:59`);
   if (placa) consulta = consulta.eq('veiculos.placa', placa);
 
   const { data, error } = await consulta;
