@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configurações — Estacionamento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+</head>
+<body>
+
+  <div class="shell">
+    <div id="sidebar-container"></div>
+
+    <div>
+      <div id="header-container"></div>
+
+      <main class="conteudo">
+        <div class="pagina-titulo">
+          <h1>Configurações</h1>
+          <p>Dados do estabelecimento e valor cobrado</p>
+        </div>
+
+        <div id="aviso" class="login-erro oculto"></div>
+        <div id="sucesso" class="aviso-sucesso oculto">✅ Alterações salvas</div>
+
+        <!-- ============== PREÇO ============== -->
+        <div class="cartao" style="margin-bottom: var(--espaco-4);">
+          <h3 style="margin-bottom: var(--espaco-2);">Valor cobrado</h3>
+          <p class="texto-suave" style="margin-bottom: var(--espaco-3); font-size: 0.875rem;">
+            Cada período começado é cobrado por inteiro. Não há valor proporcional.
+          </p>
+
+          <form id="form-preco" class="grade-form-3col">
+            <div class="campo">
+              <label for="valor-bloco">Valor cobrado (R$)</label>
+              <input type="number" id="valor-bloco" min="0" step="0.10" required />
+            </div>
+            <div class="campo">
+              <label for="minutos-bloco">A cada quantos minutos</label>
+              <select id="minutos-bloco" required>
+                <option value="15">15 minutos</option>
+                <option value="30">30 minutos (meia hora)</option>
+                <option value="60">60 minutos (1 hora)</option>
+              </select>
+            </div>
+          </form>
+
+          <!-- Tabela viva: recalcula enquanto o usuário digita -->
+          <div class="previa-preco">
+            <p class="acoes-rotulo">Como vai ficar a cobrança:</p>
+            <table class="previa-tabela" id="previa-preco">
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============== DADOS DO ESTABELECIMENTO ============== -->
+        <div class="cartao" style="margin-bottom: var(--espaco-4);">
+          <h3 style="margin-bottom: var(--espaco-2);">Dados do estabelecimento</h3>
+          <p class="texto-suave" style="margin-bottom: var(--espaco-3); font-size: 0.875rem;">
+            Aparecem no comprovante que o cliente recebe.
+          </p>
+
+          <form id="form-dados" class="grade-form-3col">
+            <div class="campo">
+              <label for="nome">Nome do estacionamento</label>
+              <input type="text" id="nome" required />
+            </div>
+            <div class="campo">
+              <label for="cnpj">CNPJ</label>
+              <input type="text" id="cnpj" inputmode="numeric" maxlength="18" required />
+            </div>
+            <div class="campo">
+              <label for="responsavel">Responsável</label>
+              <input type="text" id="responsavel" required />
+            </div>
+            <div class="campo">
+              <label for="contato-responsavel">Contato (WhatsApp ou e-mail)</label>
+              <input type="text" id="contato-responsavel" required />
+            </div>
+          </form>
+        </div>
+
+        <button type="button" id="btn-salvar" class="btn btn-primario btn-bloco">
+          Salvar alterações
+        </button>
+
+        <!-- ============== ASSINATURA (só leitura) ============== -->
+        <div class="cartao" style="margin-top: var(--espaco-5);">
+          <h3 style="margin-bottom: var(--espaco-3);">Sua assinatura</h3>
+          <div class="info-veiculo">
+            <div class="info-item">
+              <div class="info-rotulo">Situação</div>
+              <div class="info-valor" id="info-assinatura">—</div>
+            </div>
+            <div class="info-item">
+              <div class="info-rotulo">Válida até</div>
+              <div class="info-valor" id="info-vencimento">—</div>
+            </div>
+          </div>
+          <p class="texto-suave" style="margin-top: var(--espaco-3); font-size: 0.875rem;">
+            Para mudar de plano ou tirar dúvidas sobre a cobrança, fale com o suporte.
+          </p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="js/configuracoes.js"></script>
+</body>
+</html>

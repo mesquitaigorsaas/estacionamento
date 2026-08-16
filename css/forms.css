@@ -180,6 +180,39 @@
   box-shadow: var(--sombra);
 }
 
+/* ------------------------------------------------------------
+   Prévia da cobrança nas Configurações
+   ------------------------------------------------------------ */
+.previa-preco {
+  margin-top: var(--espaco-4);
+  padding-top: var(--espaco-4);
+  border-top: 1px solid var(--cor-borda);
+}
+
+.previa-tabela {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 320px;
+}
+
+.previa-tabela td {
+  padding: 7px 0;
+  border-bottom: 1px solid var(--cor-borda);
+  font-size: 0.9375rem;
+  color: var(--cor-texto-suave);
+}
+
+.previa-tabela tr:last-child td {
+  border-bottom: none;
+}
+
+.previa-tabela .previa-valor {
+  text-align: right;
+  font-weight: 700;
+  color: var(--cor-texto);
+  font-variant-numeric: tabular-nums;
+}
+
 /* Recibo/cupom — some da tela normal, só aparece ao imprimir */
 .recibo {
   display: none;
