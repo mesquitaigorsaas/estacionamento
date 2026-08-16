@@ -7,6 +7,8 @@
 // historico.html?status=finalizada&campo=saida&de=hoje&ate=hoje
 // ============================================================
 
+import { dataDeHoje } from './datas.js';
+
 /** Devolve o valor de um parâmetro do endereço, ou '' se não houver. */
 export function parametro(nome) {
   return new URLSearchParams(window.location.search).get(nome) ?? '';
@@ -21,12 +23,4 @@ export function resolverData(valor) {
   if (!valor) return '';
   if (valor === 'hoje') return dataDeHoje();
   return valor;
-}
-
-/** Data de hoje no formato que o <input type="date"> entende. */
-export function dataDeHoje() {
-  const hoje = new Date();
-  const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-  const dia = String(hoje.getDate()).padStart(2, '0');
-  return `${hoje.getFullYear()}-${mes}-${dia}`;
 }

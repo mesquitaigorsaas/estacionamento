@@ -10,6 +10,7 @@ import { montarShell } from './utils/layout.js';
 import { formatarDataHora, formatarDuracao, formatarMoeda } from './utils/formatadores.js';
 import { minutosEntre } from './utils/calculos.js';
 import { parametro, resolverData } from './utils/parametros.js';
+import { inicioDoDia, fimDoDia } from './utils/datas.js';
 
 const NOME_PAGINA = 'historico';
 
@@ -64,8 +65,8 @@ async function carregarHistorico() {
   const campoData = document.getElementById('filtro-campo-data').value;
 
   if (status) consulta = consulta.eq('status', status);
-  if (dataInicio) consulta = consulta.gte(campoData, `${dataInicio}T00:00:00`);
-  if (dataFim) consulta = consulta.lte(campoData, `${dataFim}T23:59:59`);
+  if (dataInicio) consulta = consulta.gte(campoData, inicioDoDia(dataInicio));
+  if (dataFim) consulta = consulta.lte(campoData, fimDoDia(dataFim));
   if (placa) consulta = consulta.eq('veiculos.placa', placa);
 
   const { data, error } = await consulta;

@@ -5,6 +5,7 @@
 
 import { supabase } from '../supabase.js';
 import { renovarMensalidade } from './mensalidades.js';
+import { inicioDoDia, fimDoDia, dataLocal } from '../utils/datas.js';
 
 /**
  * Registra o pagamento e empurra o vencimento em +1 mês.
@@ -24,7 +25,9 @@ export async function registrarPagamento({ mensalidadeId, usuarioId, valor, form
 
   const proximoVencimento = new Date(`${vencimentoAtual}T00:00:00`);
   proximoVencimento.setMonth(proximoVencimento.getMonth() + 1);
-  const novaData = proximoVencimento.toISOString().slice(0, 10);
+  // dataLocal em vez de toISOString: o toISOString converte para
+  // UTC e pode devolver o dia anterior dependendo do fuso.
+  const novaData = dataLocal(proximoVencimento);
 
   const resultado = await renovarMensalidade(mensalidadeId, novaData);
   if (resultado.erro) return { erro: resultado.erro };
@@ -38,8 +41,8 @@ export async function listarPagamentos({ dataInicio, dataFim }) {
     .select('*, mensalidades(*, clientes(*), veiculos(*))')
     .order('data_pagamento', { ascending: false });
 
-  if (dataInicio) consulta = consulta.gte('data_pagamento', `${dataInicio}T00:00:00`);
-  if (dataFim) consulta = consulta.lte('data_pagamento', `${dataFim}T23:59:59`);
+  if (dataInicio) consulta = consulta.gte('data_pagamento', inicioDoDia(dataInicio));
+  if (dataFim) consulta = consulta.lte('data_pagamento', fimDoDia(dataFim));
 
   const { data, error } = await consulta;
   if (error) {

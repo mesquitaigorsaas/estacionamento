@@ -4,6 +4,7 @@
 // ============================================================
 
 import { supabase } from '../supabase.js';
+import { inicioDoDia, fimDoDia } from '../utils/datas.js';
 
 /** Pega a primeira tarifa ativa cadastrada (usada como padrão). */
 export async function buscarTarifaPadrao() {
@@ -107,8 +108,8 @@ export async function listarMovimentacoesFinalizadas({ dataInicio, dataFim }) {
     .eq('status', 'finalizada')
     .order('saida', { ascending: false });
 
-  if (dataInicio) consulta = consulta.gte('saida', `${dataInicio}T00:00:00`);
-  if (dataFim) consulta = consulta.lte('saida', `${dataFim}T23:59:59`);
+  if (dataInicio) consulta = consulta.gte('saida', inicioDoDia(dataInicio));
+  if (dataFim) consulta = consulta.lte('saida', fimDoDia(dataFim));
 
   const { data, error } = await consulta;
   if (error) {
