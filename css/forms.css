@@ -213,6 +213,17 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Marca as linhas em que a diária segurou o valor */
+.previa-tabela .previa-nota {
+  text-align: right;
+  width: 70px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--cor-acento-escuro);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
 /* Recibo/cupom — some da tela normal, só aparece ao imprimir */
 .recibo {
   display: none;

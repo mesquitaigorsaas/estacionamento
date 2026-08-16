@@ -19,12 +19,14 @@ import {
 } from './services/mensalidades.js';
 import { registrarPagamento } from './services/pagamentos.js';
 import { dataDeHoje, somarMeses } from './utils/datas.js';
+import { supabase } from './supabase.js';
 
 const NOME_PAGINA = 'mensalistas';
 let veiculoEncontrado = null;
 let diasAviso = 3;
 let dataInicioAuto = null;
 let vencimentoAuto = null;
+let mensalidadeSugerida = null; // valor padrão vindo das Configurações
 
 // Guarda, enquanto a página estiver aberta, quais mensalidades
 // já foram pagas nesta sessão — usado para manter a badge "✔ Pago" visível.
@@ -38,11 +40,27 @@ async function iniciar() {
   document.getElementById('modal-container').innerHTML = await fetch('components/modal.html').then((r) => r.text());
 
   diasAviso = await buscarDiasAvisoVencimento();
+  mensalidadeSugerida = await buscarMensalidadeSugerida(usuario);
   await carregarTabela(usuario);
 
   document.getElementById('form-busca').addEventListener('submit', aoConsultarPlaca);
   document.getElementById('btn-cadastrar-mensalidade').addEventListener('click', aoCadastrarMensalidade);
   document.getElementById('modal-fechar').addEventListener('click', fecharModal);
+}
+
+/**
+ * Valor de mensalidade sugerido nas Configurações do próprio
+ * estacionamento. Devolve null se não houver — aí o campo fica
+ * em branco e o atendente digita.
+ */
+async function buscarMensalidadeSugerida(usuario) {
+  const { data } = await supabase
+    .from('estacionamentos')
+    .select('*')
+    .eq('id', usuario.estacionamento_id)
+    .single();
+
+  return data?.valor_mensal_padrao ?? null;
 }
 
 // ------------------------------------------------------------
@@ -69,6 +87,13 @@ async function aoConsultarPlaca(evento) {
 
   dataInicioAuto = dataDeHoje();
   vencimentoAuto = somarMeses(dataInicioAuto, 1);
+
+  // Preenche o valor com a sugestão das Configurações, mas só se
+  // o campo estiver vazio — nunca apaga o que o atendente digitou.
+  const campoValor = document.getElementById('campo-valor');
+  if (mensalidadeSugerida !== null && !campoValor.value) {
+    campoValor.value = mensalidadeSugerida;
+  }
 
   document.getElementById('texto-vencimento').textContent =
     new Date(`${vencimentoAuto}T00:00:00`).toLocaleDateString('pt-BR');

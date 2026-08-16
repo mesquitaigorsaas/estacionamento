@@ -17,14 +17,22 @@ export function minutosEntre(inicio, fim) {
 const MINUTOS_POR_BLOCO_PADRAO = 30;
 const VALOR_POR_BLOCO_PADRAO = 2.5;
 
+const MINUTOS_POR_DIA = 24 * 60;
+
 /**
  * Calcula o valor a cobrar.
+ *
  * Regra: cobrança por blocos fechados (arredondando sempre pra
  * cima), sem tolerância — 31 minutos paga o mesmo que 60 (2
- * blocos). Os valores (minutos por bloco, valor por bloco) vêm
- * do PRÓPRIO estacionamento (tabela `estacionamentos`, colunas
- * `minutos_bloco`/`valor_bloco`) — não são mais fixos no código,
- * porque cada estacionamento define o próprio preço.
+ * blocos). Os valores vêm do PRÓPRIO estacionamento (tabela
+ * `estacionamentos`), porque cada um define o próprio preço.
+ *
+ * Se o estacionamento tiver `valor_diaria` preenchido, ela vira
+ * um TETO: a soma dos blocos nunca passa dela dentro de um mesmo
+ * dia. Carro que fica mais de 24h paga uma diária por dia cheio
+ * mais o resto (também limitado ao teto).
+ *
+ * Diária vazia = sem teto, cobra só por blocos.
  */
 export function calcularValor(entrada, saida, estacionamento) {
   const minutos = minutosEntre(entrada, saida);
@@ -32,7 +40,21 @@ export function calcularValor(entrada, saida, estacionamento) {
 
   const minutosPorBloco = Number(estacionamento?.minutos_bloco) || MINUTOS_POR_BLOCO_PADRAO;
   const valorPorBloco = Number(estacionamento?.valor_bloco) || VALOR_POR_BLOCO_PADRAO;
+  const valorDiaria = Number(estacionamento?.valor_diaria) || 0;
 
-  const blocos = Math.ceil(minutos / minutosPorBloco);
-  return Number((blocos * valorPorBloco).toFixed(2));
+  const porBlocos = (mins) => Math.ceil(mins / minutosPorBloco) * valorPorBloco;
+
+  if (!(valorDiaria > 0)) {
+    return arredondar(porBlocos(minutos));
+  }
+
+  const diasCheios = Math.floor(minutos / MINUTOS_POR_DIA);
+  const restoMinutos = minutos % MINUTOS_POR_DIA;
+  const valorResto = restoMinutos > 0 ? Math.min(porBlocos(restoMinutos), valorDiaria) : 0;
+
+  return arredondar(diasCheios * valorDiaria + valorResto);
+}
+
+function arredondar(valor) {
+  return Number(valor.toFixed(2));
 }

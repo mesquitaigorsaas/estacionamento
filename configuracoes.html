@@ -47,7 +47,21 @@
                 <option value="60">60 minutos (1 hora)</option>
               </select>
             </div>
+            <div class="campo">
+              <label for="valor-diaria">Diária — teto do dia (R$)</label>
+              <input type="number" id="valor-diaria" min="0" step="1" placeholder="deixe vazio se não tiver" />
+            </div>
+            <div class="campo">
+              <label for="valor-mensal">Mensalidade sugerida (R$)</label>
+              <input type="number" id="valor-mensal" min="0" step="10" placeholder="deixe vazio se não usar" />
+            </div>
           </form>
+
+          <p class="texto-suave" style="margin-top: var(--espaco-2); font-size: 0.8125rem;">
+            A <strong>diária</strong> é um limite: passou dela, para de somar no dia.
+            A <strong>mensalidade</strong> só aparece preenchida ao cadastrar um mensalista —
+            você ainda pode mudar o valor de cada cliente.
+          </p>
 
           <!-- Tabela viva: recalcula enquanto o usuário digita -->
           <div class="previa-preco">

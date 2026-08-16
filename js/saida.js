@@ -53,9 +53,11 @@ async function iniciar() {
  * do comprovante (nome, CNPJ, contato).
  */
 async function carregarEstacionamento(usuario) {
+  // select('*') de propósito: assim a tela não quebra quando uma
+  // coluna nova (diária, por exemplo) ainda não existir no banco.
   const { data } = await supabase
     .from('estacionamentos')
-    .select('nome, cnpj, contato_responsavel, valor_bloco, minutos_bloco')
+    .select('*')
     .eq('id', usuario.estacionamento_id)
     .single();
 

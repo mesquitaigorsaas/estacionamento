@@ -65,6 +65,11 @@ async function carregarDados() {
   document.getElementById('valor-bloco').value = Number(data.valor_bloco ?? 0).toFixed(2);
   document.getElementById('minutos-bloco').value = String(data.minutos_bloco ?? 30);
 
+  // Diária e mensalidade são opcionais: campo vazio significa
+  // "não tem", e não "vale zero".
+  document.getElementById('valor-diaria').value = data.valor_diaria ?? '';
+  document.getElementById('valor-mensal').value = data.valor_mensal_padrao ?? '';
+
   document.getElementById('info-assinatura').textContent =
     data.assinatura_status === 'ativa' ? 'Ativa' : 'Suspensa';
 
@@ -85,20 +90,32 @@ async function carregarDados() {
  * a prévia nunca diverge da conta real.
  */
 function montarPrevia() {
-  const valorBloco = Number(document.getElementById('valor-bloco').value) || 0;
-  const minutosBloco = Number(document.getElementById('minutos-bloco').value) || 30;
-  const estacionamento = { valor_bloco: valorBloco, minutos_bloco: minutosBloco };
+  const estacionamento = {
+    valor_bloco: Number(document.getElementById('valor-bloco').value) || 0,
+    minutos_bloco: Number(document.getElementById('minutos-bloco').value) || 30,
+    valor_diaria: Number(document.getElementById('valor-diaria').value) || 0,
+  };
 
-  const tempos = [10, 30, 45, 60, 120, 240, 480];
+  const tempos = [15, 30, 60, 120, 480, 1440];
   const entrada = new Date(2026, 0, 1, 8, 0, 0);
 
   const linhas = tempos.map((minutos) => {
     const saida = new Date(entrada.getTime() + minutos * 60000);
     const valor = calcularValor(entrada.toISOString(), saida.toISOString(), estacionamento);
+
+    // Marca as linhas em que a diária segurou o valor, pra ficar
+    // visível qual é o efeito real dela.
+    const semTeto = calcularValor(entrada.toISOString(), saida.toISOString(), {
+      ...estacionamento,
+      valor_diaria: 0,
+    });
+    const seguradoPelaDiaria = valor < semTeto;
+
     return `
       <tr>
-        <td>${formatarDuracao(minutos)}</td>
+        <td>${minutos === 1440 ? '24h' : formatarDuracao(minutos)}</td>
         <td class="previa-valor">${formatarMoeda(valor)}</td>
+        <td class="previa-nota">${seguradoPelaDiaria ? 'diária' : ''}</td>
       </tr>
     `;
   });
@@ -119,6 +136,12 @@ async function aoSalvar() {
   const valorBloco = Number(document.getElementById('valor-bloco').value);
   const minutosBloco = Number(document.getElementById('minutos-bloco').value);
 
+  // Campo vazio grava null (= "não tem"), e não zero.
+  const textoDiaria = document.getElementById('valor-diaria').value.trim();
+  const textoMensal = document.getElementById('valor-mensal').value.trim();
+  const valorDiaria = textoDiaria === '' ? null : Number(textoDiaria);
+  const valorMensal = textoMensal === '' ? null : Number(textoMensal);
+
   if (!campoPreenchido(nome) || !campoPreenchido(responsavel) || !campoPreenchido(contato)) {
     mostrarAviso('Preencha nome, responsável e contato.');
     return;
@@ -131,6 +154,13 @@ async function aoSalvar() {
 
   if (!(valorBloco > 0)) {
     mostrarAviso('O valor cobrado precisa ser maior que zero.');
+    return;
+  }
+
+  // Diária menor que um bloco tornaria o teto menor que a menor
+  // cobrança possível — o cliente pagaria a diária sempre.
+  if (valorDiaria !== null && valorDiaria > 0 && valorDiaria < valorBloco) {
+    mostrarAviso(`A diária não pode ser menor que ${formatarMoeda(valorBloco)}, que é o valor do período mínimo.`);
     return;
   }
 
@@ -147,6 +177,8 @@ async function aoSalvar() {
       contato_responsavel: contato,
       valor_bloco: valorBloco,
       minutos_bloco: minutosBloco,
+      valor_diaria: valorDiaria,
+      valor_mensal_padrao: valorMensal,
     })
     .eq('id', usuarioLogado.estacionamento_id);
 
