@@ -17,7 +17,25 @@ async function iniciar() {
   if (!usuario) return; // exigirLogin já redireciona para o login
 
   await montarShell(usuario, NOME_PAGINA, 'Início');
+  removerCartoesRestritos(usuario);
   await carregarIndicadores();
+}
+
+/**
+ * Tira da tela os cartões marcados com data-perfis que o usuário
+ * não tem. Hoje é só o de faturamento: funcionário não vê dinheiro
+ * nem no Financeiro nem aqui.
+ *
+ * Remove o cartão do HTML em vez de escondê-lo, e roda ANTES de
+ * carregar os indicadores — assim o valor nunca chega a ser
+ * buscado nem escrito na tela.
+ */
+function removerCartoesRestritos(usuario) {
+  document.querySelectorAll('.indicador[data-perfis]').forEach((cartao) => {
+    if (!cartao.dataset.perfis.split(',').includes(usuario.perfil)) {
+      cartao.remove();
+    }
+  });
 }
 
 // ------------------------------------------------------------
@@ -40,7 +58,9 @@ async function carregarIndicadores() {
     contar('movimentacoes', (q) => q.eq('status', 'aberta')),
     contar('movimentacoes', (q) => q.gte('entrada', inicioHojeISO)),
     contar('movimentacoes', (q) => q.eq('status', 'finalizada').gte('saida', inicioHojeISO)),
-    somarFaturamentoHoje(inicioHojeISO),
+    // Só busca o faturamento se o cartão existir. Sem isso, o valor
+    // viajaria até o navegador do funcionário mesmo sem aparecer.
+    document.getElementById('ind-faturamento-hoje') ? somarFaturamentoHoje(inicioHojeISO) : 0,
     contar('mensalidades', (q) => q.in('status', ['em_dia', 'vence_em_breve'])),
     contar('mensalidades', (q) => q.eq('status', 'vence_em_breve')),
     contar('mensalidades', (q) => q.eq('status', 'vencido')),
@@ -83,8 +103,10 @@ async function somarFaturamentoHoje(inicioHojeISO) {
   return data.reduce((total, linha) => total + (Number(linha.valor) || 0), 0);
 }
 
+/** Escreve no elemento, se ele existir — cartões restritos são removidos antes. */
 function definirTexto(id, valor) {
-  document.getElementById(id).textContent = valor;
+  const elemento = document.getElementById(id);
+  if (elemento) elemento.textContent = valor;
 }
 
 function formatarMoeda(valor) {

@@ -39,7 +39,10 @@
             <div class="indicador-valor" id="ind-saidas-hoje">—</div>
             <div class="indicador-link">Ver as saídas →</div>
           </a>
-          <a class="indicador indicador-sucesso" href="financeiro.html?de=hoje&amp;ate=hoje">
+          <!-- data-perfis: some para quem não pode ver dinheiro.
+               Quem remove é o js/dashboard.js, antes de buscar os dados. -->
+          <a class="indicador indicador-sucesso" href="financeiro.html?de=hoje&amp;ate=hoje"
+             data-perfis="administrador">
             <div class="indicador-rotulo">Faturamento hoje</div>
             <div class="indicador-valor" id="ind-faturamento-hoje">—</div>
             <div class="indicador-link">Ver o financeiro →</div>
