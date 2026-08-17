@@ -462,3 +462,12 @@
   font-size: 0.875rem;
   margin-bottom: var(--espaco-3);
 }
+
+/* Mesma caixa, mas para recado que não é erro — cadastro
+   recebido e aguardando pagamento, por exemplo. Vermelho ali
+   faria o cliente achar que algo deu errado. */
+.login-erro.login-aviso {
+  background: rgba(42, 157, 143, 0.12);
+  color: var(--cor-acento-escuro);
+  font-weight: 500;
+}

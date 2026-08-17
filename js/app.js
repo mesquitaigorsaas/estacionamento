@@ -81,6 +81,8 @@ formLogin.addEventListener('submit', async (evento) => {
 
   if (!resultado.sucesso) {
     divErroLogin.textContent = resultado.mensagem;
+    // Cadastro aguardando pagamento não é erro: pinta de aviso.
+    divErroLogin.classList.toggle('login-aviso', Boolean(resultado.aguardando));
     divErroLogin.classList.remove('oculto');
     btnEntrar.disabled = false;
     btnEntrar.textContent = 'Entrar';

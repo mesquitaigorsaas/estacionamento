@@ -48,7 +48,7 @@ export async function fazerLogin(login, senha) {
   const assinatura = await verificarAssinaturaAtiva(usuario.estacionamento_id);
   if (!assinatura.ativa) {
     await supabase.auth.signOut();
-    return { sucesso: false, mensagem: assinatura.mensagem };
+    return { sucesso: false, mensagem: assinatura.mensagem, aguardando: assinatura.aguardando };
   }
 
   // Guarda o perfil localmente para controle de UI (menus, botões)
@@ -171,6 +171,9 @@ async function verificarAssinaturaAtiva(estacionamentoId) {
   if (estacionamento.assinatura_status === 'aguardando_pagamento') {
     return {
       ativa: false,
+      // Não é erro: a tela usa isso para pintar de aviso, não de
+      // vermelho. Quem se cadastrou e não pagou ainda não errou nada.
+      aguardando: true,
       mensagem: 'Seu cadastro foi recebido! O acesso é liberado assim que o pagamento for confirmado.',
     };
   }
