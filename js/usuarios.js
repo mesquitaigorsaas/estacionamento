@@ -12,6 +12,7 @@ import { exigirLogin, exigirPerfil } from './auth.js';
 import { montarShell } from './utils/layout.js';
 import { supabase } from './supabase.js';
 import { campoPreenchido } from './utils/validacoes.js';
+import { mensagemDaFuncao } from './utils/erros.js';
 
 const NOME_PAGINA = 'usuarios';
 let listaCompleta = [];
@@ -129,7 +130,7 @@ async function aoCadastrarUsuario(evento) {
   btn.textContent = 'Cadastrar usuário';
 
   if (error || data?.erro) {
-    mostrarAviso(data?.erro ?? error.message ?? 'Erro ao cadastrar usuário.');
+    mostrarAviso(await mensagemDaFuncao(error, data, 'Não foi possível cadastrar o usuário.'));
     return;
   }
 
@@ -228,7 +229,7 @@ function abrirModalResetarSenha(usuario) {
     });
 
     if (error || data?.erro) {
-      mostrarErroModal(data?.erro ?? error.message ?? 'Erro ao resetar senha.');
+      mostrarErroModal(await mensagemDaFuncao(error, data, 'Não foi possível resetar a senha.'));
       return;
     }
 
@@ -250,7 +251,7 @@ async function confirmarExclusao(usuario) {
   });
 
   if (error || data?.erro) {
-    alert(data?.erro ?? error.message ?? 'Erro ao excluir usuário.');
+    alert(await mensagemDaFuncao(error, data, 'Não foi possível excluir o usuário.'));
     return;
   }
 

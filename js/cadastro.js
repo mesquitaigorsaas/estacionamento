@@ -14,6 +14,7 @@ import { supabase } from './supabase.js';
 import { parametro } from './utils/parametros.js';
 import { formatarCnpj } from './utils/formatadores.js';
 import { PLANOS } from './planos.js';
+import { mensagemDaFuncao } from './utils/erros.js';
 
 // Anual é o padrão: é o plano em destaque na tela inicial.
 const plano = PLANOS[parametro('plano')] ? parametro('plano') : 'anual';
@@ -74,7 +75,7 @@ async function aoCadastrar(evento) {
   botao.textContent = 'Continuar para o pagamento';
 
   if (error || data?.erro) {
-    mostrarErro(data?.erro ?? 'Não foi possível salvar o cadastro. Tente novamente.');
+    mostrarErro(await mensagemDaFuncao(error, data, 'Não foi possível salvar o cadastro. Tente novamente.'));
     return;
   }
 
