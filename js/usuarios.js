@@ -8,7 +8,7 @@
 // direto no navegador.
 // ============================================================
 
-import { exigirLogin } from './auth.js';
+import { exigirLogin, exigirPerfil } from './auth.js';
 import { montarShell } from './utils/layout.js';
 import { supabase } from './supabase.js';
 import { campoPreenchido } from './utils/validacoes.js';
@@ -20,6 +20,10 @@ let usuarioLogado = null;
 async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
+
+  // Quem cria e exclui acesso é só o dono do estacionamento.
+  if (!exigirPerfil(usuario, 'administrador')) return;
+
   usuarioLogado = usuario;
 
   await montarShell(usuario, NOME_PAGINA, 'Usuários');

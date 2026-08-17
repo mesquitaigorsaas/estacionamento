@@ -10,7 +10,7 @@
 // isso é o suporte, não o cliente.
 // ============================================================
 
-import { exigirLogin } from './auth.js';
+import { exigirLogin, exigirPerfil } from './auth.js';
 import { montarShell } from './utils/layout.js';
 import { supabase } from './supabase.js';
 import { formatarMoeda, formatarCnpj, formatarDuracao } from './utils/formatadores.js';
@@ -27,10 +27,7 @@ async function iniciar() {
 
   // O menu já esconde o item para quem não é administrador, mas
   // alguém pode chegar aqui digitando o endereço direto.
-  if (usuario.perfil !== 'administrador') {
-    window.location.href = 'dashboard.html';
-    return;
-  }
+  if (!exigirPerfil(usuario, 'administrador')) return;
 
   usuarioLogado = usuario;
   await montarShell(usuario, NOME_PAGINA, 'Configurações');

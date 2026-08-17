@@ -4,7 +4,7 @@
 // Faturamento avulso + mensalistas dentro de um período.
 // ============================================================
 
-import { exigirLogin } from './auth.js';
+import { exigirLogin, exigirPerfil } from './auth.js';
 import { montarShell } from './utils/layout.js';
 import { formatarDataHora, formatarMoeda } from './utils/formatadores.js';
 import { listarMovimentacoesFinalizadas } from './services/movimentacoes.js';
@@ -16,6 +16,10 @@ const NOME_PAGINA = 'financeiro';
 async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
+
+  // Só o dono do estacionamento vê o dinheiro. Funcionário que
+  // digitar o endereço direto é mandado de volta para o Início.
+  if (!exigirPerfil(usuario, 'administrador')) return;
 
   await montarShell(usuario, NOME_PAGINA, 'Financeiro');
   definirPeriodoPadrao();

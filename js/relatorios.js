@@ -4,7 +4,7 @@
 // Gráfico de faturamento diário (Chart.js) + placas mais frequentes.
 // ============================================================
 
-import { exigirLogin } from './auth.js';
+import { exigirLogin, exigirPerfil } from './auth.js';
 import { montarShell } from './utils/layout.js';
 import { formatarMoeda } from './utils/formatadores.js';
 import { listarMovimentacoesFinalizadas } from './services/movimentacoes.js';
@@ -17,6 +17,9 @@ let grafico = null;
 async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
+
+  // Relatório mostra faturamento — mesma regra do Financeiro.
+  if (!exigirPerfil(usuario, 'administrador')) return;
 
   await montarShell(usuario, NOME_PAGINA, 'Relatórios');
   definirPeriodoPadrao();

@@ -115,6 +115,25 @@ export async function exigirLogin() {
   return usuario;
 }
 
+/**
+ * Tranca a página para quem não tem o perfil certo.
+ * Chame logo depois do exigirLogin:
+ *
+ *   const usuario = await exigirLogin();
+ *   if (!usuario) return;
+ *   if (!exigirPerfil(usuario, 'administrador')) return;
+ *
+ * Esconder o item do menu não basta: sem isso, um funcionário
+ * digita o endereço da página no navegador e entra do mesmo jeito.
+ */
+export function exigirPerfil(usuario, ...perfisPermitidos) {
+  if (!usuario || !perfisPermitidos.includes(usuario.perfil)) {
+    window.location.href = 'dashboard.html';
+    return false;
+  }
+  return true;
+}
+
 /** Retorna o usuário logado a partir do cache local (sem consultar o banco). */
 export function usuarioAtual() {
   const usuarioSalvo = localStorage.getItem('usuario_atual');
