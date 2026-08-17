@@ -38,9 +38,12 @@ async function iniciar() {
 
   document.getElementById('btn-salvar').addEventListener('click', aoSalvar);
 
-  // A prévia acompanha o que está sendo digitado, antes de salvar
+  // A prévia acompanha o que está sendo digitado, antes de salvar.
+  // Os três campos entram na conta — esquecer um deixa a tabela
+  // mostrando um preço que não é o que vai ser cobrado.
   document.getElementById('valor-bloco').addEventListener('input', montarPrevia);
   document.getElementById('minutos-bloco').addEventListener('change', montarPrevia);
+  document.getElementById('valor-diaria').addEventListener('input', montarPrevia);
 }
 
 // ------------------------------------------------------------
@@ -113,7 +116,7 @@ function montarPrevia() {
 
     return `
       <tr>
-        <td>${minutos === 1440 ? '24h' : formatarDuracao(minutos)}</td>
+        <td>${rotuloTempo(minutos)}</td>
         <td class="previa-valor">${formatarMoeda(valor)}</td>
         <td class="previa-nota">${seguradoPelaDiaria ? 'diária' : ''}</td>
       </tr>
@@ -121,6 +124,13 @@ function montarPrevia() {
   });
 
   document.querySelector('#previa-preco tbody').innerHTML = linhas.join('');
+}
+
+/** "1h" em vez de "1h 0min" — a prévia é lida de relance. */
+function rotuloTempo(minutos) {
+  if (minutos === 1440) return '24h';
+  if (minutos % 60 === 0) return `${minutos / 60}h`;
+  return formatarDuracao(minutos);
 }
 
 // ------------------------------------------------------------
