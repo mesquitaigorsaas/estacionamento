@@ -16,7 +16,7 @@ async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return; // exigirLogin já redireciona para o login
 
-  await montarShell(usuario, NOME_PAGINA, 'Dashboard');
+  await montarShell(usuario, NOME_PAGINA, 'Início');
   await carregarIndicadores();
 }
 
