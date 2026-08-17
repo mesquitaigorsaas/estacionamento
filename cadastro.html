@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Criar conta — Achei Vaga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/login.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+</head>
+<body>
+
+  <div class="tela-login">
+    <div class="cadastro-caixa">
+
+      <div class="login-topo">
+        <img src="assets/logo/logo.png" alt="Achei Vaga" class="logo" />
+        <p>Crie a conta do seu estacionamento</p>
+      </div>
+
+      <!-- Plano escolhido, vindo da tela inicial -->
+      <div class="plano-escolhido" id="plano-escolhido">
+        <div>
+          <span class="plano-escolhido-nome" id="plano-nome">—</span>
+          <span class="plano-escolhido-valor" id="plano-valor">—</span>
+        </div>
+        <a href="index.html" class="plano-trocar">trocar</a>
+      </div>
+
+      <form id="form-cadastro">
+        <div id="cadastro-erro" class="login-erro oculto"></div>
+
+        <p class="acoes-rotulo">Dados do estacionamento</p>
+
+        <div class="campo">
+          <label for="nome">Nome do estacionamento</label>
+          <input type="text" id="nome" required autocomplete="organization" />
+        </div>
+
+        <div class="campo">
+          <label for="cnpj">CNPJ</label>
+          <input type="text" id="cnpj" inputmode="numeric" maxlength="18" required
+                 placeholder="00.000.000/0000-00" />
+        </div>
+
+        <div class="campo">
+          <label for="responsavel">Responsável</label>
+          <input type="text" id="responsavel" required autocomplete="name" />
+        </div>
+
+        <div class="campo">
+          <label for="contato">WhatsApp com DDD</label>
+          <input type="tel" id="contato" required autocomplete="tel" placeholder="35999999999" />
+        </div>
+
+        <p class="acoes-rotulo" style="margin-top: var(--espaco-4);">Seu acesso ao sistema</p>
+
+        <div class="campo">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" required autocomplete="email" />
+        </div>
+
+        <div class="campo">
+          <label for="senha">Senha</label>
+          <div class="campo-senha-wrapper">
+            <input type="password" id="senha" minlength="6" required autocomplete="new-password" />
+            <button type="button" id="btn-mostrar-senha">Mostrar</button>
+          </div>
+          <p class="campo-dica">Mínimo de 6 caracteres. É com ela que você vai entrar.</p>
+        </div>
+
+        <button type="submit" id="btn-cadastrar" class="btn btn-primario btn-bloco">
+          Continuar para o pagamento
+        </button>
+
+        <p class="cadastro-rodape">
+          Seus dados são salvos agora. Na próxima tela você escolhe pagar com
+          <strong>cartão ou Pix</strong>. O acesso é liberado assim que o pagamento é confirmado.
+        </p>
+      </form>
+
+      <!-- Substitui o formulário depois de cadastrar -->
+      <div id="bloco-pronto" class="oculto">
+        <div class="aviso-sucesso">✅ Cadastro salvo</div>
+        <p class="resumo-registro" id="resumo-cadastro">—</p>
+        <p style="margin-bottom: var(--espaco-4);">
+          Falta só o pagamento. Clique no botão abaixo para ir ao Mercado Pago —
+          lá você escolhe entre <strong>cartão ou Pix</strong>.
+        </p>
+        <a id="link-pagamento" class="btn btn-primario btn-bloco" target="_blank" rel="noopener">
+          Ir para o pagamento
+        </a>
+        <p class="cadastro-rodape">
+          Já pagou? Seu acesso é liberado em seguida e você recebe um aviso no
+          WhatsApp informado. Qualquer dúvida, é só chamar.
+        </p>
+      </div>
+
+      <p class="cadastro-voltar"><a href="index.html">Já tenho conta — entrar</a></p>
+    </div>
+  </div>
+
+  <script type="module" src="js/cadastro.js"></script>
+</body>
+</html>

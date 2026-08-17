@@ -166,6 +166,15 @@ async function verificarAssinaturaAtiva(estacionamentoId) {
     return { ativa: false, mensagem: 'Não foi possível confirmar o acesso do seu estacionamento. Contate o suporte.' };
   }
 
+  // Quem acabou de se cadastrar e ainda não pagou não fez nada de
+  // errado — a mensagem precisa dizer isso, e não "suspenso".
+  if (estacionamento.assinatura_status === 'aguardando_pagamento') {
+    return {
+      ativa: false,
+      mensagem: 'Seu cadastro foi recebido! O acesso é liberado assim que o pagamento for confirmado.',
+    };
+  }
+
   if (estacionamento.assinatura_status !== 'ativa') {
     return { ativa: false, mensagem: 'O acesso deste estacionamento está suspenso. Contate o suporte para regularizar a assinatura.' };
   }

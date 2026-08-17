@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assinantes — Achei Vaga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/tables.css" />
+</head>
+<body>
+
+  <div class="shell">
+    <div id="sidebar-container"></div>
+
+    <div>
+      <div id="header-container"></div>
+
+      <main class="conteudo">
+        <div class="pagina-titulo">
+          <h1>Assinantes</h1>
+          <p>Estacionamentos cadastrados no Achei Vaga</p>
+        </div>
+
+        <div id="aviso" class="login-erro oculto"></div>
+
+        <!-- ============== AGUARDANDO PAGAMENTO ============== -->
+        <div class="cartao" style="margin-bottom: var(--espaco-4);">
+          <h3 style="margin-bottom: var(--espaco-2);">Aguardando pagamento</h3>
+          <p class="texto-suave" style="margin-bottom: var(--espaco-3); font-size: 0.875rem;">
+            Cadastraram-se e ainda não foram liberados. Confira o pagamento no
+            Mercado Pago antes de liberar.
+          </p>
+
+          <div class="tabela-wrapper">
+            <table class="tabela">
+              <thead>
+                <tr>
+                  <th>Estacionamento</th>
+                  <th>CNPJ</th>
+                  <th>Responsável</th>
+                  <th>Contato</th>
+                  <th>Plano</th>
+                  <th>Cadastro</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="corpo-aguardando"></tbody>
+            </table>
+            <div id="vazio-aguardando" class="mensagem-vazio oculto">
+              Nenhum cadastro aguardando. 🎉
+            </div>
+          </div>
+        </div>
+
+        <!-- ============== ATIVOS ============== -->
+        <div class="cartao">
+          <h3 style="margin-bottom: var(--espaco-3);">Assinantes ativos</h3>
+
+          <div class="tabela-wrapper">
+            <table class="tabela">
+              <thead>
+                <tr>
+                  <th>Estacionamento</th>
+                  <th>CNPJ</th>
+                  <th>Responsável</th>
+                  <th>Contato</th>
+                  <th>Plano</th>
+                  <th>Situação</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="corpo-ativos"></tbody>
+            </table>
+            <div id="vazio-ativos" class="mensagem-vazio oculto">
+              Nenhum assinante ativo ainda.
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="js/assinantes.js"></script>
+</body>
+</html>

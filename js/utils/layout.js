@@ -40,6 +40,12 @@ export async function montarShell(usuario, nomePagina, tituloPagina) {
     }
   });
 
+  // Itens da equipe do Achei Vaga. Não basta ser administrador:
+  // todo assinante é administrador do próprio estacionamento.
+  document.querySelectorAll('.sidebar-item[data-suporte]').forEach((item) => {
+    if (!usuario.suporte) item.remove();
+  });
+
   const itemAtivo = document.querySelector(`.sidebar-item[data-pagina="${nomePagina}"]`);
   if (itemAtivo) itemAtivo.classList.add('ativo');
 
