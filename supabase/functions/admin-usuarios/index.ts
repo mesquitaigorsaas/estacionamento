@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
 
     const { data: usuarioChamador, error: erroPerfil } = await supabaseAdmin
       .from('usuarios')
-      .select('perfil')
+      .select('perfil, estacionamento_id')
       .eq('auth_id', user.id)
       .single();
 
@@ -54,9 +54,18 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
 
-    if (body.acao === 'criar') return await criarUsuario(supabaseAdmin, body);
-    if (body.acao === 'resetar_senha') return await resetarSenha(supabaseAdmin, body);
-    if (body.acao === 'deletar') return await deletarUsuario(supabaseAdmin, body);
+    // O funcionário novo entra SEMPRE no estacionamento de quem
+    // está cadastrando. Nunca vem do navegador: senão um admin
+    // poderia criar usuário dentro do estacionamento de outro.
+    if (body.acao === 'criar') {
+      return await criarUsuario(supabaseAdmin, body, usuarioChamador.estacionamento_id);
+    }
+    if (body.acao === 'resetar_senha') {
+      return await resetarSenha(supabaseAdmin, body, usuarioChamador.estacionamento_id);
+    }
+    if (body.acao === 'deletar') {
+      return await deletarUsuario(supabaseAdmin, body, usuarioChamador.estacionamento_id);
+    }
 
     return respostaErro('Ação inválida.', 400);
   } catch (erro) {
@@ -64,9 +73,16 @@ Deno.serve(async (req) => {
   }
 });
 
-async function criarUsuario(supabaseAdmin, { nome, login, senha, perfil }) {
+async function criarUsuario(supabaseAdmin, { nome, login, senha, perfil }, estacionamentoId) {
   if (!nome || !login || !senha || !perfil) {
     return respostaErro('Preencha nome, login, senha e perfil.', 400);
+  }
+
+  // Sem estacionamento o usuário até é criado, mas nunca consegue
+  // entrar: o login confere a assinatura do estacionamento dele.
+  // Melhor recusar aqui do que entregar um acesso quebrado.
+  if (!estacionamentoId) {
+    return respostaErro('Seu usuário não está vinculado a um estacionamento. Contate o suporte.', 400);
   }
 
   const { data: authData, error: erroAuth } = await supabaseAdmin.auth.admin.createUser({
@@ -83,6 +99,7 @@ async function criarUsuario(supabaseAdmin, { nome, login, senha, perfil }) {
     login,
     perfil,
     ativo: true,
+    estacionamento_id: estacionamentoId,
   });
 
   if (erroInsercao) {
@@ -95,16 +112,33 @@ async function criarUsuario(supabaseAdmin, { nome, login, senha, perfil }) {
   return respostaOk({ ok: true });
 }
 
-async function resetarSenha(supabaseAdmin, { usuarioId, novaSenha }) {
-  if (!usuarioId || !novaSenha) return respostaErro('Dados incompletos.', 400);
-
-  const { data: usuario, error: erroBusca } = await supabaseAdmin
+/**
+ * Busca o usuário alvo GARANTINDO que ele é do mesmo
+ * estacionamento de quem pediu.
+ *
+ * Esta função roda com a chave mestra, que ignora as regras de
+ * segurança do banco. Sem esta checagem, o administrador de um
+ * estacionamento conseguiria resetar a senha ou excluir usuários
+ * de outro, só trocando o id enviado pelo navegador.
+ */
+async function buscarUsuarioDoMesmoEstacionamento(supabaseAdmin, usuarioId, estacionamentoId) {
+  const { data, error } = await supabaseAdmin
     .from('usuarios')
-    .select('auth_id')
+    .select('auth_id, estacionamento_id')
     .eq('id', usuarioId)
     .single();
 
-  if (erroBusca || !usuario) return respostaErro('Usuário não encontrado.', 404);
+  if (error || !data) return null;
+  if (!estacionamentoId || data.estacionamento_id !== estacionamentoId) return null;
+
+  return data;
+}
+
+async function resetarSenha(supabaseAdmin, { usuarioId, novaSenha }, estacionamentoId) {
+  if (!usuarioId || !novaSenha) return respostaErro('Dados incompletos.', 400);
+
+  const usuario = await buscarUsuarioDoMesmoEstacionamento(supabaseAdmin, usuarioId, estacionamentoId);
+  if (!usuario) return respostaErro('Usuário não encontrado.', 404);
 
   const { error } = await supabaseAdmin.auth.admin.updateUserById(usuario.auth_id, {
     password: novaSenha,
@@ -114,16 +148,11 @@ async function resetarSenha(supabaseAdmin, { usuarioId, novaSenha }) {
   return respostaOk({ ok: true });
 }
 
-async function deletarUsuario(supabaseAdmin, { usuarioId }) {
+async function deletarUsuario(supabaseAdmin, { usuarioId }, estacionamentoId) {
   if (!usuarioId) return respostaErro('Usuário não informado.', 400);
 
-  const { data: usuario, error: erroBusca } = await supabaseAdmin
-    .from('usuarios')
-    .select('auth_id')
-    .eq('id', usuarioId)
-    .single();
-
-  if (erroBusca || !usuario) return respostaErro('Usuário não encontrado.', 404);
+  const usuario = await buscarUsuarioDoMesmoEstacionamento(supabaseAdmin, usuarioId, estacionamentoId);
+  if (!usuario) return respostaErro('Usuário não encontrado.', 404);
 
   await supabaseAdmin.from('usuarios').delete().eq('id', usuarioId);
   await supabaseAdmin.auth.admin.deleteUser(usuario.auth_id);
