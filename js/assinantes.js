@@ -18,6 +18,11 @@ import { linkWhatsapp } from './utils/whatsapp.js';
 
 const NOME_PAGINA = 'assinantes';
 
+// Estacionamento de quem está usando a tela. Guardado para não
+// oferecer "Suspender" na própria conta: um clique se trancaria
+// fora do sistema, e só daria para voltar por SQL.
+let meuEstacionamentoId = null;
+
 async function iniciar() {
   const usuario = await exigirLogin();
   if (!usuario) return;
@@ -29,6 +34,8 @@ async function iniciar() {
     window.location.href = 'dashboard.html';
     return;
   }
+
+  meuEstacionamentoId = usuario.estacionamento_id;
 
   await montarShell(usuario, NOME_PAGINA, 'Assinantes');
   await carregar();
@@ -107,9 +114,16 @@ function renderizarAtivos(lista) {
       ? '<span class="badge badge-sucesso">Ativa</span>'
       : '<span class="badge badge-perigo">Suspensa</span>';
 
-    const acao = ativa
-      ? `<button class="btn btn-secundario" data-suspender="${e.id}" style="padding:6px 12px; font-size:0.8125rem;">Suspender</button>`
-      : `<button class="btn btn-primario" data-liberar="${e.id}" style="padding:6px 12px; font-size:0.8125rem;">Reativar</button>`;
+    const ehVoce = e.id === meuEstacionamentoId;
+
+    let acao;
+    if (ehVoce) {
+      acao = '<span class="texto-suave" style="font-size:0.8125rem;">sua conta</span>';
+    } else if (ativa) {
+      acao = `<button class="btn btn-secundario" data-suspender="${e.id}" style="padding:6px 12px; font-size:0.8125rem;">Suspender</button>`;
+    } else {
+      acao = `<button class="btn btn-primario" data-liberar="${e.id}" style="padding:6px 12px; font-size:0.8125rem;">Reativar</button>`;
+    }
 
     return `
       <tr>
