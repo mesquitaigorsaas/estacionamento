@@ -91,7 +91,7 @@ async function criarUsuario(supabaseAdmin, { nome, login, senha, perfil }, estac
     email_confirm: true,
   });
 
-  if (erroAuth) return respostaErro(erroAuth.message, 400);
+  if (erroAuth) return respostaErro(traduzErroCadastro(erroAuth.message), 400);
 
   const { error: erroInsercao } = await supabaseAdmin.from('usuarios').insert({
     auth_id: authData.user.id,
@@ -158,6 +158,26 @@ async function deletarUsuario(supabaseAdmin, { usuarioId }, estacionamentoId) {
   await supabaseAdmin.auth.admin.deleteUser(usuario.auth_id);
 
   return respostaOk({ ok: true });
+}
+
+/**
+ * O Supabase responde em inglês e falando de "e-mail", mas na
+ * tela o campo se chama "login". Traduz para o que o dono do
+ * estacionamento entende, com a saída já indicada.
+ */
+function traduzErroCadastro(mensagem) {
+  const texto = (mensagem ?? '').toLowerCase();
+
+  if (texto.includes('already been registered') || texto.includes('already exists')) {
+    return 'Este login já está em uso. Escolha outro — por exemplo, acrescente o sobrenome.';
+  }
+  if (texto.includes('password')) {
+    return 'A senha precisa ter pelo menos 6 caracteres.';
+  }
+  if (texto.includes('invalid') && texto.includes('email')) {
+    return 'Login inválido. Use o formato nome@estacionamento.local, sem espaços nem acentos.';
+  }
+  return `Não foi possível cadastrar: ${mensagem}`;
 }
 
 function respostaOk(corpo) {
