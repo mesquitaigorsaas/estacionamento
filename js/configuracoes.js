@@ -41,6 +41,7 @@ async function iniciar() {
   document.getElementById('valor-bloco').addEventListener('input', montarPrevia);
   document.getElementById('minutos-bloco').addEventListener('change', montarPrevia);
   document.getElementById('valor-diaria').addEventListener('input', montarPrevia);
+  document.getElementById('tolerancia').addEventListener('change', montarPrevia);
 }
 
 // ------------------------------------------------------------
@@ -69,6 +70,7 @@ async function carregarDados() {
   // "não tem", e não "vale zero".
   document.getElementById('valor-diaria').value = data.valor_diaria ?? '';
   document.getElementById('valor-mensal').value = data.valor_mensal_padrao ?? '';
+  document.getElementById('tolerancia').value = String(data.tolerancia_minutos ?? 0);
 
   document.getElementById('info-assinatura').textContent =
     data.assinatura_status === 'ativa' ? 'Ativa' : 'Suspensa';
@@ -94,28 +96,32 @@ function montarPrevia() {
     valor_bloco: Number(document.getElementById('valor-bloco').value) || 0,
     minutos_bloco: Number(document.getElementById('minutos-bloco').value) || 30,
     valor_diaria: Number(document.getElementById('valor-diaria').value) || 0,
+    tolerancia_minutos: Number(document.getElementById('tolerancia').value) || 0,
   };
 
-  const tempos = [15, 30, 60, 120, 480, 1440];
+  const tempos = [5, 15, 30, 60, 120, 480, 1440];
   const entrada = new Date(2026, 0, 1, 8, 0, 0);
 
   const linhas = tempos.map((minutos) => {
     const saida = new Date(entrada.getTime() + minutos * 60000);
     const valor = calcularValor(entrada.toISOString(), saida.toISOString(), estacionamento);
 
-    // Marca as linhas em que a diária segurou o valor, pra ficar
-    // visível qual é o efeito real dela.
+    // Marca por que o valor ficou diferente do simples soma-blocos,
+    // pra ficar visível o efeito de cada regra.
     const semTeto = calcularValor(entrada.toISOString(), saida.toISOString(), {
       ...estacionamento,
       valor_diaria: 0,
     });
-    const seguradoPelaDiaria = valor < semTeto;
+
+    let nota = '';
+    if (minutos <= estacionamento.tolerancia_minutos) nota = 'cortesia';
+    else if (valor < semTeto) nota = 'diária';
 
     return `
       <tr>
         <td>${rotuloTempo(minutos)}</td>
         <td class="previa-valor">${formatarMoeda(valor)}</td>
-        <td class="previa-nota">${seguradoPelaDiaria ? 'diária' : ''}</td>
+        <td class="previa-nota">${nota}</td>
       </tr>
     `;
   });
@@ -186,6 +192,7 @@ async function aoSalvar() {
       minutos_bloco: minutosBloco,
       valor_diaria: valorDiaria,
       valor_mensal_padrao: valorMensal,
+      tolerancia_minutos: Number(document.getElementById('tolerancia').value) || 0,
     })
     .eq('id', usuarioLogado.estacionamento_id);
 

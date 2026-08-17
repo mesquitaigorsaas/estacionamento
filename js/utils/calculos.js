@@ -38,6 +38,11 @@ export function calcularValor(entrada, saida, estacionamento) {
   const minutos = minutosEntre(entrada, saida);
   if (minutos <= 0) return 0;
 
+  // Cortesia: quem entra e sai dentro da tolerância não paga nada.
+  // Zero (o padrão) significa cobrar desde o primeiro minuto.
+  const tolerancia = Number(estacionamento?.tolerancia_minutos) || 0;
+  if (minutos <= tolerancia) return 0;
+
   const minutosPorBloco = Number(estacionamento?.minutos_bloco) || MINUTOS_POR_BLOCO_PADRAO;
   const valorPorBloco = Number(estacionamento?.valor_bloco) || VALOR_POR_BLOCO_PADRAO;
   const valorDiaria = Number(estacionamento?.valor_diaria) || 0;
