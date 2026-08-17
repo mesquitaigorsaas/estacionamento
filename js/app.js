@@ -5,6 +5,26 @@
 
 import { supabase } from './supabase.js';
 import { fazerLogin } from './auth.js';
+import { planoOu } from './planos.js';
+
+/**
+ * Mostra o botão de pagamento quando o cadastro existe mas ainda
+ * não foi pago. É a única saída de quem fechou a aba do cadastro
+ * antes de pagar — sem ele, a pessoa fica presa na tela de login.
+ */
+function mostrarBotaoPagamento(resultado) {
+  const link = document.getElementById('link-pagar');
+
+  if (!resultado.aguardando) {
+    link.classList.add('oculto');
+    return;
+  }
+
+  const plano = planoOu(resultado.plano);
+  link.href = plano.link;
+  link.textContent = `Pagar ${plano.nome} — ${plano.valor}`;
+  link.classList.remove('oculto');
+}
 
 const formLogin = document.getElementById('form-login');
 
@@ -84,6 +104,9 @@ formLogin.addEventListener('submit', async (evento) => {
     // Cadastro aguardando pagamento não é erro: pinta de aviso.
     divErroLogin.classList.toggle('login-aviso', Boolean(resultado.aguardando));
     divErroLogin.classList.remove('oculto');
+
+    mostrarBotaoPagamento(resultado);
+
     btnEntrar.disabled = false;
     btnEntrar.textContent = 'Entrar';
     return;

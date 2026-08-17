@@ -82,6 +82,14 @@
       <form id="form-login">
         <div id="login-erro" class="login-erro oculto"></div>
 
+        <!-- Aparece só para quem se cadastrou e ainda não pagou.
+             Sem isto, quem fechou a aba do cadastro não teria mais
+             como concluir a assinatura. -->
+        <a id="link-pagar" class="btn btn-primario btn-bloco oculto"
+           target="_blank" rel="noopener" style="margin-bottom: var(--espaco-3);">
+          Concluir pagamento
+        </a>
+
         <div class="campo">
           <label for="login-usuario">Usuário</label>
           <input type="text" id="login-usuario" name="usuario" autocomplete="username" required />

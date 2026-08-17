@@ -48,7 +48,12 @@ export async function fazerLogin(login, senha) {
   const assinatura = await verificarAssinaturaAtiva(usuario.estacionamento_id);
   if (!assinatura.ativa) {
     await supabase.auth.signOut();
-    return { sucesso: false, mensagem: assinatura.mensagem, aguardando: assinatura.aguardando };
+    return {
+      sucesso: false,
+      mensagem: assinatura.mensagem,
+      aguardando: assinatura.aguardando,
+      plano: assinatura.plano,
+    };
   }
 
   // Guarda o perfil localmente para controle de UI (menus, botões)
@@ -158,7 +163,7 @@ function loginParaEmail(login) {
 async function verificarAssinaturaAtiva(estacionamentoId) {
   const { data: estacionamento, error } = await supabase
     .from('estacionamentos')
-    .select('assinatura_status')
+    .select('assinatura_status, plano')
     .eq('id', estacionamentoId)
     .single();
 
@@ -174,7 +179,10 @@ async function verificarAssinaturaAtiva(estacionamentoId) {
       // Não é erro: a tela usa isso para pintar de aviso, não de
       // vermelho. Quem se cadastrou e não pagou ainda não errou nada.
       aguardando: true,
-      mensagem: 'Seu cadastro foi recebido! O acesso é liberado assim que o pagamento for confirmado.',
+      // Sem isto, quem fechasse a aba do cadastro não teria mais
+      // por onde pagar: a tela de login vira um beco sem saída.
+      plano: estacionamento.plano,
+      mensagem: 'Seu cadastro foi recebido! Falta só o pagamento para liberar o acesso.',
     };
   }
 
